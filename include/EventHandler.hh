@@ -3,6 +3,6 @@
 class           EventHandler
 {
   public:
-  EventHandler();
-  ~EventHandler();
-}
+  virtual int handle(int) = 0;
+  ~EventHandler(){};
+};

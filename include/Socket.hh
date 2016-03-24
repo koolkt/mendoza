@@ -15,13 +15,13 @@ class Socket
   struct sockaddr_in	s_in;
   socklen_t		size;
   int			port;
-  int			socket_fd;
   char                  create_socket();
  public:
+  int			socket_fd;
   Socket();
   Socket(int fd);
   bool                  connectToServer(std::string const & host, short const port);
-  int                   srecv(std::string& buffer, int const blocksize);
+  static int            srecv(std::string& buffer, int const blocksize, int fd);
   int                   ssend(std::string const & data);
                         ~Socket();
 };

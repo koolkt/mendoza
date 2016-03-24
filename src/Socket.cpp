@@ -33,29 +33,30 @@ bool                  Socket::connectToServer(std::string const & host, short co
   return (true);
 }
 
-int                   Socket::srecv(std::string& buffer, int const blocksize)
+int                   Socket::srecv(std::string& buffer, int const blocksize, int fd)
 {
   char                  b[blocksize];
   ssize_t               br;
   ssize_t               total_br;
 
-  // br = 1;
-  // total_br = 0;
-  // while (br != 0 && total_br < (blocksize-1))
-  //   {
-  //     br = recv(this->socket_fd, b+total_br, blocksize-total_br-1,0);
-  //     total_br += br;
-  //   }
-  br = recv(this->socket_fd, b, blocksize-1,0);
-  b[br] = '\0';
+  br = 2;
+  total_br = 0;
+  while (br > 1 && total_br < (blocksize-1))
+    {
+      br = recv(fd, b+total_br, blocksize-total_br-1,0);
+      total_br += br;
+    }
+  //br = recv(fd, b, blocksize-1,0);
+  b[total_br] = '\0';
   buffer = std::string(b);
-  std::cout << buffer;
-  return (br);
+
+  return (total_br);
 }
 
 int                   Socket::ssend(std::string const & data)
 {
   int                   sent;
+
   sent = send(this->socket_fd, data.c_str(), data.length(),0);
   return (sent);
 }
