@@ -3,7 +3,7 @@
 #
 #
 
-SERVER =	mendoza_server
+SERVER =	bin/mendoza_server
 
 SERVER_TESTS = server_tests
 
@@ -27,7 +27,7 @@ build/%.o : src/%.cpp
 all:		$(SERVER)
 
 $(SERVER):	$(SRVR_OBJ) $(DEPS)
-		$(CC) $(CFLAGS) $(INC) $(SRVR_OBJ) -o bin/$(SERVER)
+		$(CC) $(CFLAGS) $(INC) $(SRVR_OBJ) -o $@
 
 #runtests:
 
