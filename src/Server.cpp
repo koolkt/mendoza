@@ -1,9 +1,9 @@
 #include                <Server.hh>
 
-Server(int port)
+Server::Server(int port)
 {
 }
 
-~Server()
+Server::~Server()
 {
 }

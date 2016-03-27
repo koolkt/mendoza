@@ -5,7 +5,7 @@
 #include                <Socket.hh>
 #define                 SOCKET_ERROR -1
 
-class                   IServersocket
+class                   IServerSocket
 {
   virtual char                  dbind() = 0;
   virtual char			dlisten() = 0;
@@ -13,5 +13,5 @@ class                   IServersocket
 public:
   virtual bool                  init(short const listenPort) = 0;
   virtual int                   daccept() = 0;
-  virtual                       ~IServersocket() {};
+  virtual                       ~IServerSocket() {};
 };

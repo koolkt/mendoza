@@ -1,5 +1,5 @@
 #include <iostream>
-#include <Serversocket.hh>
+#include <ServerSocket.hh>
 #include <Epoll.hh>
 
 int             main(int argc, char **argv)
@@ -9,7 +9,7 @@ int             main(int argc, char **argv)
   std::string   buffer;
   int           s;
   Socket        *Socket;
-  Serversocket  *Server;
+  ServerSocket  *Server;
   Epoll         *loop;
   int           fd;
   char          buff[1024];
@@ -20,7 +20,7 @@ int             main(int argc, char **argv)
   if (argc != 2)
     return(0);
   port = atoi(argv[1]);
-  Server = new Serversocket();
+  Server = new ServerSocket();
   Server->init(port);
   loop = new Epoll();
   loop->init(*Server);

@@ -1,7 +1,7 @@
 #pragma                 once
 #include                <IServersocket.hh>
 
-class                   Serversocket : public IServersocket
+class                   ServerSocket : public IServerSocket
 {
   struct sockaddr_in	s_in;
   socklen_t		size;
@@ -10,9 +10,9 @@ class                   Serversocket : public IServersocket
   char			dlisten();
   char                  create_socket();
 public:
-  Serversocket();
+  ServerSocket();
   int			socket_fd;
   virtual bool          init(short const listenPort);
   virtual int           daccept();
-  virtual               ~Serversocket();
+  virtual               ~ServerSocket();
 };

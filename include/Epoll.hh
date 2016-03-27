@@ -12,7 +12,7 @@
 #include                <EventHandler.hh>
 #include                <iostream>
 #include                <cstdlib>
-#include                <Serversocket.hh>
+#include                <ServerSocket.hh>
 #define                 INCOMMING_CONNECTION fd == this->server_socket->socket_fd
 
 class                   Epoll
@@ -20,7 +20,7 @@ class                   Epoll
   struct epoll_event	event;
   struct epoll_event	*events;
   int			epoll_fd;
-  Serversocket		*server_socket;
+  ServerSocket		*server_socket;
   int                   handle_read(int fd);
   int                   handle_error(int fd);
   int                   accept_new_client();
@@ -29,7 +29,7 @@ class                   Epoll
                         Epoll();
   int                   delete_fd(int fd);
   int                   add_fd(int fd);
-  int                   init(Serversocket& socket);
+  int                   init(ServerSocket& socket);
   int                   wait();
   ~Epoll();
 };

@@ -42,7 +42,7 @@ int			Epoll::add_server_socket()
   return (EXIT_SUCCESS);
 }
 
-int			Epoll::init(Serversocket& _socket)
+int			Epoll::init(ServerSocket& _socket)
 {
   this->server_socket = &_socket;
   this->epoll_fd = epoll_create1(0);

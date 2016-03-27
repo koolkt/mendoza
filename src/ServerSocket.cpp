@@ -1,10 +1,10 @@
-#include                <Serversocket.hh>
+#include                <ServerSocket.hh>
 
-Serversocket::Serversocket()
+ServerSocket::ServerSocket()
 {
 }
 
-char                    Serversocket::create_socket()
+char                    ServerSocket::create_socket()
 {
   int                           reuse;
   struct protoent		*s_p;
@@ -32,7 +32,7 @@ char                    Serversocket::create_socket()
   return (EXIT_SUCCESS);
 }
 
-char                    Serversocket::dbind()
+char                    ServerSocket::dbind()
 {
   int				result;
 
@@ -51,7 +51,7 @@ char                    Serversocket::dbind()
   return (EXIT_SUCCESS);
 }
 
-char                    Serversocket::dlisten()
+char                    ServerSocket::dlisten()
 {
   int				result;
 
@@ -65,7 +65,7 @@ char                    Serversocket::dlisten()
   return (EXIT_SUCCESS);
 }
 
-bool Serversocket::init(short const listenPort)
+bool ServerSocket::init(short const listenPort)
 {
   this->port = listenPort;
   if ((this->create_socket())
@@ -78,7 +78,7 @@ bool Serversocket::init(short const listenPort)
   return (true);
 }
 
-int                 Serversocket::daccept()
+int                 ServerSocket::daccept()
 {
   int                   accepted_fd;
   struct sockaddr_in	client_sin;
@@ -92,6 +92,6 @@ int                 Serversocket::daccept()
   return accepted_fd;
 }
 
-Serversocket::~Serversocket()
+ServerSocket::~ServerSocket()
 {
 }
