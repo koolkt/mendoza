@@ -29,8 +29,6 @@ all:		$(SERVER)
 $(SERVER):	$(SRVR_OBJ) $(DEPS)
 		$(CC) $(CFLAGS) $(INC) $(SRVR_OBJ) -o $@
 
-#runtests:
-
 clean:
 			$(RM) $(SRVR_OBJ)
 
