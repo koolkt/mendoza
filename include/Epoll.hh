@@ -13,13 +13,17 @@
 #include                <iostream>
 #include                <cstdlib>
 #include                <Serversocket.hh>
+#define                 INCOMMING_CONNECTION fd == this->server_socket->socket_fd
 
 class                   Epoll
 {
   struct epoll_event	event;
   struct epoll_event	*events;
   int			epoll_fd;
-  Serversocket		server_socket;
+  Serversocket		*server_socket;
+  int                   handle_read(int fd);
+  int                   handle_error(int fd);
+  int                   accept_new_client();
   int                   add_server_socket();
   public:
                         Epoll();

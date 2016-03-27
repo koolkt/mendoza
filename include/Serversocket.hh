@@ -13,6 +13,6 @@ public:
   Serversocket();
   int			socket_fd;
   virtual bool          init(short const listenPort);
-  virtual Socket*       daccept();
+  virtual int           daccept();
   virtual               ~Serversocket();
 };

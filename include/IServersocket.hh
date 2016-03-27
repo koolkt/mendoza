@@ -12,6 +12,6 @@ class                   IServersocket
   virtual char                  create_socket() = 0;
 public:
   virtual bool                  init(short const listenPort) = 0;
-  virtual Socket*               daccept() = 0;
+  virtual int                   daccept() = 0;
   virtual                       ~IServersocket() {};
 };

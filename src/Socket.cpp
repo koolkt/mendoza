@@ -37,20 +37,11 @@ int                   Socket::srecv(std::string& buffer, int const blocksize, in
 {
   char                  b[blocksize];
   ssize_t               br;
-  ssize_t               total_br;
 
-  br = 2;
-  total_br = 0;
-  while (br > 1 && total_br < (blocksize-1))
-    {
-      br = recv(fd, b+total_br, blocksize-total_br-1,0);
-      total_br += br;
-    }
-  //br = recv(fd, b, blocksize-1,0);
-  b[total_br] = '\0';
+  br = recv(fd, b, blocksize-1,0);
+  b[br] = '\0';
   buffer = std::string(b);
-
-  return (total_br);
+  return (br);
 }
 
 int                   Socket::ssend(std::string const & data)

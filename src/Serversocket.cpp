@@ -6,8 +6,10 @@ Serversocket::Serversocket()
 
 char                    Serversocket::create_socket()
 {
+  int                           reuse;
   struct protoent		*s_p;
 
+  reuse = 1;
   s_p = getprotobyname("TCP");
   if(s_p == NULL)
     {
@@ -18,6 +20,14 @@ char                    Serversocket::create_socket()
     {
       return(EXIT_FAILURE);
     }
+  if (setsockopt(this->socket_fd, SOL_SOCKET, SO_REUSEADDR,
+                 (const char*)&reuse, sizeof(int)) < 0)
+    return (EXIT_FAILURE);
+#ifdef SO_REUSEPORT
+  if (setsockopt(this->socket_fd, SOL_SOCKET, SO_REUSEPORT,
+                 (const char*)&reuse, sizeof(reuse)) < 0)
+    return (EXIT_FAILURE);
+#endif
   std::cout << "Socket created" << std::endl;
   return (EXIT_SUCCESS);
 }
@@ -68,18 +78,18 @@ bool Serversocket::init(short const listenPort)
   return (true);
 }
 
-Socket*                 Serversocket::daccept()
+int                 Serversocket::daccept()
 {
   int                   accepted_fd;
   struct sockaddr_in	client_sin;
   socklen_t		client_sin_len;
 
   client_sin_len = sizeof(client_sin);
-  accepted_fd = accept(this->socket_fd, (struct sockaddr *)&client_sin,
-                     &client_sin_len);
-  // accepted_fd = accept4(this->socket_fd, (struct sockaddr *)&client_sin,
-  //                       &client_sin_len, SOCK_NONBLOCK);
-  return new Socket(accepted_fd);
+  // accepted_fd = accept(this->socket_fd, (struct sockaddr *)&client_sin,
+  //                    &client_sin_len);
+  accepted_fd = accept4(this->socket_fd, (struct sockaddr *)&client_sin,
+                        &client_sin_len, SOCK_NONBLOCK);
+  return accepted_fd;
 }
 
 Serversocket::~Serversocket()
