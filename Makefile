@@ -5,7 +5,13 @@
 
 SERVER =	bin/mendoza_server
 
-SERVER_TESTS = server_tests
+TESTS_DIR =	tests
+
+TEST1_DIR =	$(TESTS_DIR)/test_basic_network
+
+TEST1 = 	$(TEST1_DIR)/bin/test1
+
+TESTS =		$(TEST1)
 
 CC =		g++
 
@@ -23,33 +29,44 @@ SRVR_OBJ := $(SERVER_SOURCES:src/%.cpp=build/%.o)
 
 TEST_OBJ := $(TEST_SOURCES:src/%.cpp=build/%.o)
 
-TEST1_OBJ  = tests/test_basic_network/build/test_main.o
+###### TEST1
+
+MAIN1_OBJ  = $(TEST1_DIR)/build/test_main.o
+
+################
 
 DEPS =	$(shell find ./include  -name "*.hh")
 
-# tests/test_basic_network/build/test_main.o : tests/test_basic_network/src/test_main.cpp
-# 	$(CC)  -c $< $(INC) -o $@
-
 build/%.o : src/%.cpp
+	$(CC) $(CFLAGS) -c $< $(INC) -o $@
+
+tests/%/build/test_main.o : tests/%/src/test_main.cpp
 	$(CC)  -c $< $(INC) -o $@
 
-# %build/%.o : %src/%.cpp
-# 	$(CC)  -c $< $(INC) -o $@
+all:		$(SERVER) $(TEST1)
 
-all:		$(SERVER)
 
 $(SERVER):	$(SRVR_OBJ) $(DEPS)
 		$(CC) $(CFLAGS) $(INC) $(SRVR_OBJ) -o $@
 
+run_tests:	$(TESTS)
+		python -m unittest
+
+test1 :		$(TEST1)
+		python $(TEST1_DIR)/test_basic_sockets.py
+
+$(TEST1):	$(TEST_OBJ) $(DEPS) $(MAIN1_OBJ)
+		$(CC) $(CFLAGS) $(INC) $(MAIN1_OBJ) $(TEST_OBJ) -o $@
+
+clean_tests:
+			$(RM) $(TEST1_OBJ) $(TEST_OBJ)
+
 clean:
 			$(RM) $(SRVR_OBJ)
 
-test1:		$(TEST_OBJ) $(DEPS) $(TEST1_OBJ)
-		$(CC) $(CFLAGS) $(INC) $(TEST1_OBJ) $(TEST_OBJ) -o $@
-
-fclean:		clean
-			$(RM) $(SERVER) bin/$(SERVER)
+fclean:		clean clean_tests
+			$(RM) $(SERVER) $(TESTS)
 
 re:			fclean $(SERVER)
 
-.PHONY:			all clean fclean re tests
+.PHONY:			all clean fclean re clean_tests run_tests

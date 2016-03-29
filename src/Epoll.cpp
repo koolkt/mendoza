@@ -69,12 +69,7 @@ int             Epoll::accept_new_client()
 
 int            Epoll::handle_read(int fd)
 {
-  if (INCOMMING_CONNECTION)
-    {
-      this->accept_new_client();
-    }
-  else
-    return(fd);
+  return(fd);
   return (EXIT_SUCCESS);
 }
 
@@ -86,17 +81,24 @@ int            Epoll::handle_error(int fd)
 
 int		Epoll::wait()
 {
+  int           fd;
   int		nevents;
 
   nevents = epoll_wait (this->epoll_fd, this->events, MAXEVENTS, -1);
   for(int i = 0; i < nevents; ++i)
     {
+      fd = this->events[i].data.fd;
       if (FD_HAS_ERROR_OR_DISCONNECT)
-        return(handle_error(this->events[i].data.fd));
+        return(handle_error(fd));
       else if (FD_IS_READY_FOR_READ)
-        return(handle_read(this->events[i].data.fd));
+        {
+            if (INCOMMING_CONNECTION)
+              this->accept_new_client();
+            else
+              return(handle_read(fd));
+        }
       else if (FD_IS_READY_FOR_WRITE)
-        this->events[i].data.fd;
+        return(fd);
       else
         std::cout << "WTF" << std::endl;
     }

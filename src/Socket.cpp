@@ -28,9 +28,18 @@ Socket::Socket(int fd)
   this->socket_fd = fd;
 }
 
-bool                  Socket::connectToServer(std::string const & host, short const port)
+bool                    Socket::connectToServer(std::string const & host, short const port)
 {
-  return (true);
+  struct sockaddr_in    address;
+
+  memset(&address, 0, sizeof(address));
+  address.sin_family = AF_INET;
+  address.sin_port = htons(port);
+  inet_pton(AF_INET, host.c_str(), &address.sin_addr);
+  if(connect(this->socket_fd, (struct sockaddr *)&address, sizeof(address)))
+    return (false);
+  else
+    return (true);
 }
 
 int                   Socket::srecv(std::string& buffer, int const blocksize, int fd)

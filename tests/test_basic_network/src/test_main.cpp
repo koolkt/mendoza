@@ -11,7 +11,6 @@ int             main(int argc, char **argv)
   int           fd;
   char          buff[1024];
 
-
   br = 0;
   fd = -1;
   if (argc != 2)
@@ -26,10 +25,9 @@ int             main(int argc, char **argv)
       fd = loop->wait();
       if (fd > 0)
         {
-          std::cout << fd << std::endl;
           br = read(fd, buff, 1023);
           buff[br] = '\0';
-          std::cout << buff;
+          std::cout << buff << std::endl;
         }
       else if(fd < 0)
         std::cout << "Client disconnect" << std::endl;
