@@ -13,7 +13,12 @@
 #include                <iostream>
 #include                <cstdlib>
 #include                <ServerSocket.hh>
+#include                <vector>
+#include                <map>
+#include                <string>
 #define                 INCOMMING_CONNECTION fd == this->server_socket->socket_fd
+
+typedef  std::vector<std::vector<int> > Events;
 
 class                   Epoll
 {
@@ -21,15 +26,17 @@ class                   Epoll
   struct epoll_event	*events;
   int			epoll_fd;
   ServerSocket		*server_socket;
-  int                   handle_read(int fd);
-  int                   handle_error(int fd);
+  int                   handle_read(int const fd);
+  int                   handle_error(int const fd);
   int                   accept_new_client();
   int                   add_server_socket();
   public:
-                        Epoll();
-  int                   delete_fd(int fd);
-  int                   add_fd(int fd);
+  enum                  EType {WRITE_EVENTS, READ_EVENTS, ERROR_EVENTS};
+  Epoll();
+  Events                new_events;
+  int                   delete_fd(int const fd);
+  int                   add_fd(int const fd);
   int                   init(ServerSocket& socket);
-  int                   wait();
+  void                  wait();
   ~Epoll();
 };

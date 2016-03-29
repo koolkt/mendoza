@@ -22,13 +22,16 @@ char                    ServerSocket::create_socket()
     }
   if (setsockopt(this->socket_fd, SOL_SOCKET, SO_REUSEADDR,
                  (const char*)&reuse, sizeof(int)) < 0)
-    return (EXIT_FAILURE);
+    {
+      return (EXIT_FAILURE);
+    }
 #ifdef SO_REUSEPORT
   if (setsockopt(this->socket_fd, SOL_SOCKET, SO_REUSEPORT,
                  (const char*)&reuse, sizeof(reuse)) < 0)
-    return (EXIT_FAILURE);
+    {
+      return (EXIT_FAILURE);
+    }
 #endif
-  std::cout << "Socket created" << std::endl;
   return (EXIT_SUCCESS);
 }
 

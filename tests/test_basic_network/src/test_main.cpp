@@ -8,11 +8,10 @@ int             main(int argc, char **argv)
   int           br;
   ServerSocket  *Server;
   Epoll         *loop;
-  int           fd;
+  Events        *events;
   char          buff[1024];
 
   br = 0;
-  fd = -1;
   if (argc != 2)
     return(0);
   port = atoi(argv[1]);
@@ -22,15 +21,24 @@ int             main(int argc, char **argv)
   loop->init(*Server);
   while (42)
     {
-      fd = loop->wait();
-      if (fd > 0)
+      loop->wait();
+      events = &loop->new_events;
+      for (std::vector<int>::iterator it = events->at(Epoll::READ_EVENTS).begin() ;
+           it != events->at(Epoll::READ_EVENTS).end();
+           ++it)
         {
-          br = read(fd, buff, 1023);
+          br = read(*it, buff, 1023);
           buff[br] = '\0';
           std::cout << buff << std::endl;
+          write(*it, buff, strlen(buff));
         }
-      else if(fd < 0)
-        std::cout << "Client disconnect" << std::endl;
+       for (std::vector<int>::iterator it = events->at(Epoll::ERROR_EVENTS).begin() ;
+            it != events->at(Epoll::ERROR_EVENTS).end();
+            ++it)
+        {
+          loop->delete_fd(*it);
+          std::cout << "Client disconnect" << std::endl;
+        }
     }
   delete Server;
   return (0);

@@ -33,6 +33,7 @@ class MySocket:
             totalsent = totalsent + sent
 
     def myreceive(self):
+        # self.sock.setblocking(False)
         chunks = []
         bytes_recd = 0
         while bytes_recd < MSGLEN:
@@ -57,12 +58,20 @@ class TestBasicNetwork(unittest.TestCase):
     def tearDownClass(cls):
         subprocess.run(['/bin/bash', '-c', 'killall test1'], stdout=subprocess.DEVNULL)
 
-    def test_server_receive(self):
+    def test_server_rcv(self):
         s = MySocket()
         s.connect('localhost', PORT)
         s.mysend(str.encode(TESTMSG))
         with open('tests/test_basic_network/test_log','r') as f:
             self.assertTrue(TESTMSG in f.read())
+        s.close()
+
+    def test_server_send(self):
+        s = MySocket()
+        s.connect('localhost', PORT)
+        s.mysend(str.encode(TESTMSG))
+        msg = s.myreceive()
+        self.assertEqual(msg.decode(),TESTMSG)
         s.close()
 
 if __name__ == '__main__':

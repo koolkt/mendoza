@@ -9,6 +9,7 @@
 #include                        <cstdlib>
 #include                        <unistd.h>
 #include                        <cstring>
+#include                        <exception>
 
 class Socket
 {
@@ -22,6 +23,7 @@ class Socket
   Socket(int fd);
   bool                  connectToServer(std::string const & host, short const port);
   static int            srecv(std::string& buffer, int const blocksize, int fd);
+  int                   srecv(std::string& buffer, int const blocksize);
   int                   ssend(std::string const & data);
                         ~Socket();
 };

@@ -41,7 +41,7 @@ build/%.o : src/%.cpp
 	$(CC) $(CFLAGS) -c $< $(INC) -o $@
 
 tests/%/build/test_main.o : tests/%/src/test_main.cpp
-	$(CC)  -c $< $(INC) -o $@
+	$(CC) -c $< $(INC) -o $@
 
 all:		$(SERVER) $(TEST1)
 
@@ -53,7 +53,7 @@ run_tests:	$(TESTS)
 		python -m unittest
 
 test1 :		$(TEST1)
-		python $(TEST1_DIR)/test_basic_sockets.py
+		#python $(TEST1_DIR)/test_basic_sockets.py
 
 $(TEST1):	$(TEST_OBJ) $(DEPS) $(MAIN1_OBJ)
 		$(CC) $(CFLAGS) $(INC) $(MAIN1_OBJ) $(TEST_OBJ) -o $@
@@ -67,6 +67,6 @@ clean:
 fclean:		clean clean_tests
 			$(RM) $(SERVER) $(TESTS)
 
-re:			fclean $(SERVER)
+re:			fclean $(SERVER) $(TESTS)
 
 .PHONY:			all clean fclean re clean_tests run_tests

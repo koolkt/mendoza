@@ -1,5 +1,23 @@
 #include                <Socket.hh>
 
+Socket::Socket()
+{
+  try
+    {
+      create_socket();
+    }
+  catch(std::exception& e)
+    {
+      std::cout << "Standard exception: " << e.what() << std::endl;
+    }
+  return;
+}
+
+Socket::Socket(int fd)
+{
+  this->socket_fd = fd;
+}
+
 char                    Socket::create_socket()
 {
   struct protoent		*s_p;
@@ -16,16 +34,6 @@ char                    Socket::create_socket()
     }
   std::cout << "Socket created" << std::endl;
   return (EXIT_SUCCESS);
-}
-
-Socket::Socket()
-{
-  create_socket();
-}
-
-Socket::Socket(int fd)
-{
-  this->socket_fd = fd;
 }
 
 bool                    Socket::connectToServer(std::string const & host, short const port)
@@ -48,6 +56,17 @@ int                   Socket::srecv(std::string& buffer, int const blocksize, in
   ssize_t               br;
 
   br = recv(fd, b, blocksize-1,0);
+  b[br] = '\0';
+  buffer = std::string(b);
+  return (br);
+}
+
+int                   Socket::srecv(std::string& buffer, int const blocksize)
+{
+  char                  b[blocksize];
+  ssize_t               br;
+
+  br = recv(this->socket_fd, b, blocksize-1,0);
   b[br] = '\0';
   buffer = std::string(b);
   return (br);

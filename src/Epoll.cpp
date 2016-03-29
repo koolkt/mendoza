@@ -4,6 +4,7 @@
 Epoll::Epoll():
   server_socket(NULL)
 {
+  this->new_events = Events(4, std::vector<int>(MAXEVENTS + 1));
 }
 
 Epoll::~Epoll()
@@ -12,7 +13,7 @@ Epoll::~Epoll()
     free(this->events);
 }
 
-int                     Epoll::add_fd(int fd)
+int                     Epoll::add_fd(int const fd)
 {
   int                   r;
 
@@ -24,7 +25,7 @@ int                     Epoll::add_fd(int fd)
   return (EXIT_SUCCESS);
 }
 
-int                     Epoll::delete_fd(int fd)
+int                     Epoll::delete_fd(int const fd)
 {
   int                   r;
 
@@ -36,6 +37,7 @@ int                     Epoll::delete_fd(int fd)
 
 int			Epoll::add_server_socket()
 {
+  memset(&this->event,0,sizeof(struct epoll_event));
   this->event.data.fd = this->server_socket->socket_fd;
   this->event.events = EPOLLIN;
   epoll_ctl (this->epoll_fd, EPOLL_CTL_ADD, this->event.data.fd, &this->event);
@@ -67,40 +69,45 @@ int             Epoll::accept_new_client()
   return (r);
 }
 
-int            Epoll::handle_read(int fd)
+int            Epoll::handle_read(int const fd)
 {
-  return(fd);
+  if (INCOMMING_CONNECTION)
+    {
+      this->accept_new_client();
+    }
+  else
+    {
+      this->new_events[Epoll::READ_EVENTS].push_back(fd);
+    }
   return (EXIT_SUCCESS);
 }
 
-int            Epoll::handle_error(int fd)
+int            Epoll::handle_error(int const fd)
 {
   this->delete_fd(fd);
   return(-1);
 }
 
-int		Epoll::wait()
+void		Epoll::wait()
 {
   int           fd;
   int		nevents;
 
+  this->new_events[Epoll::READ_EVENTS].clear();
+  this->new_events[Epoll::WRITE_EVENTS].clear();
+  this->new_events[Epoll::ERROR_EVENTS].clear();
   nevents = epoll_wait (this->epoll_fd, this->events, MAXEVENTS, -1);
   for(int i = 0; i < nevents; ++i)
     {
       fd = this->events[i].data.fd;
       if (FD_HAS_ERROR_OR_DISCONNECT)
-        return(handle_error(fd));
+        this->new_events[Epoll::ERROR_EVENTS].push_back(fd);
       else if (FD_IS_READY_FOR_READ)
-        {
-            if (INCOMMING_CONNECTION)
-              this->accept_new_client();
-            else
-              return(handle_read(fd));
-        }
+        handle_read(fd);
       else if (FD_IS_READY_FOR_WRITE)
-        return(fd);
+        this->new_events[Epoll::WRITE_EVENTS].push_back(fd);
       else
         std::cout << "WTF" << std::endl;
     }
-  return (EXIT_SUCCESS);
+  return;
 }
