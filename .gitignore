@@ -28,5 +28,5 @@
 *.app
 
 bin/*
-*/bin/*
+tests/*/bin/*
 test_log
