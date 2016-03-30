@@ -9,9 +9,11 @@ int             main(int argc, char **argv)
   ServerSocket  *Server;
   Epoll         *loop;
   Events        *events;
-  char          buff[1024];
+  char          buff[4096];
+  int           tbr;
 
-  br = 0;
+  tbr = 0;
+  br = 1;
   if (argc != 2)
     return(0);
   port = atoi(argv[1]);
@@ -27,9 +29,17 @@ int             main(int argc, char **argv)
            it != events->at(Epoll::READ_EVENTS).end();
            ++it)
         {
-          br = read(*it, buff, 1023);
-          buff[br] = '\0';
+          tbr = 0;
+          br = 1;
+          while (br > 0 && tbr < 4095)
+            {
+              br = read(*it, buff+tbr, 4095 - tbr);
+              if(br > 0)
+                tbr += br;
+            }
+          buff[tbr] = '\0';
           std::cout << buff << std::endl;
+          std::cout << tbr << br << std::endl;
           write(*it, buff, strlen(buff));
         }
        for (std::vector<int>::iterator it = events->at(Epoll::ERROR_EVENTS).begin() ;

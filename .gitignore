@@ -1,5 +1,5 @@
 # Byte-compiled / optimized / DLL files
-__pycache__/
+tests/*/__pycache__/
 *.py[cod]
 *$py.class
 
@@ -83,8 +83,6 @@ ENV/
 
 # Spyder project settings
 .spyderproject
-
-*.pyc
 
 # Compiled Object files
 *.slo

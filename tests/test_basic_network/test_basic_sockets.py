@@ -33,11 +33,11 @@ class MySocket:
             totalsent = totalsent + sent
 
     def myreceive(self):
-        # self.sock.setblocking(False)
+        self.sock.setblocking(False)
         chunks = []
         bytes_recd = 0
         while bytes_recd < MSGLEN:
-            chunk = self.sock.recv(min(MSGLEN - bytes_recd, 2048))
+            chunk = self.sock.recv(min(MSGLEN - bytes_recd, 4096))
             if chunk == b'':
                 raise RuntimeError("socket connection broken")
             chunks.append(chunk)
@@ -70,9 +70,10 @@ class TestBasicNetwork(unittest.TestCase):
         s = MySocket()
         s.connect('localhost', PORT)
         s.mysend(str.encode(TESTMSG))
+        sleep(.1)
         msg = s.myreceive()
-        self.assertEqual(msg.decode(),TESTMSG)
         s.close()
+        self.assertEqual(msg.decode(),TESTMSG)
 
 if __name__ == '__main__':
     unittest.main()
