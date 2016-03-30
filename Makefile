@@ -9,9 +9,13 @@ TESTS_DIR =	tests
 
 TEST1_DIR =	$(TESTS_DIR)/test_basic_network
 
+TEST2_DIR =	$(TESTS_DIR)/test_smtp
+
 TEST1 = 	$(TEST1_DIR)/bin/test1
 
-TESTS =		$(TEST1)
+TEST2 = 	$(TEST2_DIR)/bin/test2
+
+TESTS =		$(TEST1) $(TEST2)
 
 CC =		g++
 
@@ -29,11 +33,13 @@ SRVR_OBJ := $(SERVER_SOURCES:src/%.cpp=build/%.o)
 
 TEST_OBJ := $(TEST_SOURCES:src/%.cpp=build/%.o)
 
-###### TEST1
+###### TESTS
 
 MAIN1_OBJ  = $(TEST1_DIR)/build/test_main.o
 
-################
+MAIN2_OBJ  = $(TEST2_DIR)/build/test_main.o
+
+######
 
 DEPS =	$(shell find ./include  -name "*.hh")
 
@@ -52,14 +58,18 @@ $(SERVER):	$(SRVR_OBJ) $(DEPS)
 run_tests:	$(TESTS)
 		python -m unittest
 
-test1 :		$(TEST1)
-		#python $(TEST1_DIR)/test_basic_sockets.py
+test_basic :	$(TEST1)
+
+test_smtp :	$(TEST2)
 
 $(TEST1):	$(TEST_OBJ) $(DEPS) $(MAIN1_OBJ)
 		$(CC) $(CFLAGS) $(INC) $(MAIN1_OBJ) $(TEST_OBJ) -o $@
 
+$(TEST2):	$(TEST_OBJ) $(DEPS) $(MAIN2_OBJ)
+		$(CC) $(CFLAGS) $(INC) $(MAIN2_OBJ) $(TEST_OBJ) -o $@
+
 clean_tests:
-			$(RM) $(TEST1_OBJ) $(TEST_OBJ)
+			$(RM) $(TEST1_OBJ) $(TEST2_OBJ) $(TEST_OBJ)
 
 clean:
 			$(RM) $(SRVR_OBJ)

@@ -43,7 +43,7 @@ char                    ServerSocket::dbind()
   memset(&this->s_in, 0, this->size);
   this->s_in.sin_family = AF_INET;
   this->s_in.sin_port = htons(this->port);
-  this->s_in.sin_addr.s_addr = INADDR_ANY;
+  this->s_in.sin_addr.s_addr = htonl(INADDR_ANY);
   result = bind(this->socket_fd, (struct sockaddr *)&this->s_in, this->size);
   if(result < 0)
     {

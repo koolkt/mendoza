@@ -59,7 +59,7 @@ class MySocket:
     def myreceive(self):
         sleep(.3)
         chunks = []
-        # self.sock.setblocking(False)
+        self.sock.setblocking(False)
         chunk = self.sock.recv(4096)
         res = chunk.decode()
         chunks.append(res)
@@ -73,17 +73,15 @@ class MySocket:
 
 
 class TestBasicSmtp(unittest.TestCase):
-    # @classmethod
-    # def setUpClass(cls):
-    #     print("Seting up..")
-        # subprocess.Popen(['bin/test1', str(PORT)], stdout=subprocess.DEVNULL)
-    #     subprocess.Popen(['/bin/bash', '-c', './tests/test_smtp/bin/test2 '+str(PORT)+
-    #                       ' > tests/test_smtp/test_log'])
-    #     sleep(.1)
+    @classmethod
+    def setUpClass(cls):
+        print("Seting up..")
+        subprocess.Popen(['./tests/test_smtp/bin/test2', str(PORT)], stdout=subprocess.DEVNULL)
+        sleep(.1)
 
-    # @classmethod
-    # def tearDownClass(cls):
-    #     subprocess.run(['/bin/bash', '-c', 'killall test2'], stdout=subprocess.DEVNULL)
+    @classmethod
+    def tearDownClass(cls):
+        subprocess.run(['/bin/bash', '-c', 'killall test2'], stdout=subprocess.DEVNULL)
 
     def setUp(self):
         self.s = MySocket()
@@ -99,7 +97,7 @@ class TestBasicSmtp(unittest.TestCase):
     def assertOkRes(self):
         self.assertEqualRcv('250 localhost Ok\r\n')
 
-    def test_server_rcv(self):
+    def test_server_send_mail(self):
         self.assertEqualRcv('220 localhost ESMTP Mendoza\r\n')
         self.s.mysend('HELO [127.0.0.1]\r\n')
         self.assertOkRes()
