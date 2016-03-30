@@ -106,8 +106,6 @@ void		Epoll::wait()
         handle_read(fd);
       else if (FD_IS_READY_FOR_WRITE)
         this->new_events[Epoll::WRITE_EVENTS].push_back(fd);
-      else
-        std::cout << "WTF" << std::endl;
     }
   return;
 }
