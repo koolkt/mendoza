@@ -42,13 +42,9 @@ int             main(int argc, char **argv)
           std::cout << tbr << br << std::endl;
           write(*it, buff, strlen(buff));
         }
-       for (std::vector<int>::iterator it = events->at(Epoll::ERROR_EVENTS).begin() ;
-            it != events->at(Epoll::ERROR_EVENTS).end();
-            ++it)
-        {
-          loop->delete_fd(*it);
-          std::cout << "Client disconnect" << std::endl;
-        }
+      std::for_each(events->at(Epoll::ERROR_EVENTS).begin(),
+                    events->at(Epoll::ERROR_EVENTS).end(),
+                    loop->delete_fd);
     }
   delete Server;
   return (0);

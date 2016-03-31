@@ -7,11 +7,11 @@
 
 class                   IServerSocket
 {
-  virtual char                  dbind() = 0;
-  virtual char			dlisten() = 0;
-  virtual char                  create_socket() = 0;
+  virtual void                  dbind() = 0;
+  virtual void			dlisten() = 0;
+  virtual void                  create_socket() = 0;
 public:
-  virtual bool                  init(short const listenPort) = 0;
+  virtual void                  init(short const listenPort) = 0;
   virtual int                   daccept() = 0;
   virtual                       ~IServerSocket() {};
 };

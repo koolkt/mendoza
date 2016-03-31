@@ -1,100 +1,81 @@
 #include                <ServerSocket.hh>
+#include                <ErrorCheck.hh>
 
 ServerSocket::ServerSocket()
 {
 }
 
-char                    ServerSocket::create_socket()
+void                    ServerSocket::create_socket()
 {
-  int                           reuse;
-  struct protoent		*s_p;
+  int                   reuse;
+  struct protoent       *s_p;
 
   reuse = 1;
   s_p = getprotobyname("TCP");
-  if(s_p == NULL)
-    {
-      return(EXIT_FAILURE);
-    }
+  ErrorCheck::check(s_p != NULL, "create_socket: getprotobyname");
   this->socket_fd = socket(AF_INET, SOCK_STREAM, s_p->p_proto);
-  if(this->socket_fd < 0)
-    {
-      return(EXIT_FAILURE);
-    }
-  if (setsockopt(this->socket_fd, SOL_SOCKET, SO_REUSEADDR,
-                 (const char*)&reuse, sizeof(int)) < 0)
-    {
-      return (EXIT_FAILURE);
-    }
+  ErrorCheck::check(this->socket_fd > 0, "create_socket: socket");
+  ErrorCheck::check(setsockopt(this->socket_fd, SOL_SOCKET, SO_REUSEADDR,
+                 (const char*)&reuse, sizeof(int)) >= 0, "create_socket: setsockopt");
 #ifdef SO_REUSEPORT
-  if (setsockopt(this->socket_fd, SOL_SOCKET, SO_REUSEPORT,
-                 (const char*)&reuse, sizeof(reuse)) < 0)
-    {
-      return (EXIT_FAILURE);
-    }
+  ErrorCheck::check(setsockopt(this->socket_fd, SOL_SOCKET, SO_REUSEPORT,
+                 (const char*)&reuse, sizeof(reuse)) >= 0, "create_socket: setsockopt");
 #endif
-  return (EXIT_SUCCESS);
+  return;
 }
 
-char                    ServerSocket::dbind()
+void                    ServerSocket::dbind()
 {
-  int				result;
-
   this->size = sizeof(this->s_in);
   memset(&this->s_in, 0, this->size);
   this->s_in.sin_family = AF_INET;
   this->s_in.sin_port = htons(this->port);
   this->s_in.sin_addr.s_addr = htonl(INADDR_ANY);
-  result = bind(this->socket_fd, (struct sockaddr *)&this->s_in, this->size);
-  if(result < 0)
-    {
-      close(this->socket_fd);
-      return(EXIT_FAILURE);
-    }
-  std::cout << "Socket bind completed" << std::endl;
-  return (EXIT_SUCCESS);
+  ErrorCheck::check(bind(this->socket_fd,
+             (struct sockaddr *)&this->s_in,
+             this->size) >= 0, "dbind: bind");
+  return;
 }
 
-char                    ServerSocket::dlisten()
+void                    ServerSocket::dlisten()
 {
-  int				result;
-
-  result = listen(this->socket_fd, SOMAXCONN);
-  if(result < 0)
-    {
-      close(this->socket_fd);
-      return(EXIT_FAILURE);
-    }
-  std::cout << "Socket bind listening on port " << this->port << std::endl;
-  return (EXIT_SUCCESS);
+  ErrorCheck::check(listen(this->socket_fd, SOMAXCONN) >= 0,"dlisten: listen");
+  return;
 }
 
-bool ServerSocket::init(short const listenPort)
+void                    ServerSocket::init(short const listenPort)
 {
-  this->port = listenPort;
-  if ((this->create_socket())
-      || this->dbind()
-      || this->dlisten())
+  try
     {
-      std::cout << "Socket error" << std::endl;
-      return (false);
+      this->port = listenPort;
+      this->create_socket();
+      this->dbind();
+      this->dlisten();
     }
-  return (true);
+  catch (std::exception& e)
+    {
+      std::perror("Perror");
+      std::cerr << e.what() << std::endl;
+      exit(1);
+    }
+  return;
 }
 
-int                 ServerSocket::daccept()
+int                     ServerSocket::daccept()
 {
   int                   accepted_fd;
   struct sockaddr_in	client_sin;
   socklen_t		client_sin_len;
 
   client_sin_len = sizeof(client_sin);
-  // accepted_fd = accept(this->socket_fd, (struct sockaddr *)&client_sin,
-  //                    &client_sin_len);
   accepted_fd = accept4(this->socket_fd, (struct sockaddr *)&client_sin,
                         &client_sin_len, SOCK_NONBLOCK);
+  ErrorCheck::check(accepted_fd > 0, "daccept: accept4");
   return accepted_fd;
 }
 
 ServerSocket::~ServerSocket()
 {
+  if (this->socket_fd > 0)
+    close(this->socket_fd);
 }
