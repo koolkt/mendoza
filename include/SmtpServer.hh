@@ -15,6 +15,7 @@ class           SmtpServer
   Mailbox       mbox;
   void          process_events(Events*);
   void          process_incomming(Client *);
+  void          process_new(Client *);
 public:
   SmtpServer(const int port);
   void          run();

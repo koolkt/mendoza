@@ -4,7 +4,7 @@
 Epoll::Epoll():
   server_socket(NULL)
 {
-  this->new_events = Events(4, std::vector<Client*>(MAXEVENTS + 1));
+  this->new_events = Events(5, std::vector<Client*>(MAXEVENTS + 1));
 }
 
 Epoll::~Epoll()
@@ -27,6 +27,7 @@ int                     Epoll::delete_client(Client *client)
 {
   int                   r;
 
+  std::cout << "Deleting client" << std::endl;
   r = epoll_ctl(this->epoll_fd, EPOLL_CTL_DEL, client->get_fd(), &this->event);
   if (r != 0)
     return (EXIT_FAILURE);
@@ -49,6 +50,7 @@ int                     Epoll::listen_new_client(int fd, __uint32_t flags)
   init_event_struct((void*)client, flags);
   client->set_socket(fd);
   add_client(client);
+  this->new_events[Epoll::NEW_CONN].push_back(client);
   return (0);
 }
 
@@ -99,6 +101,7 @@ void                    Epoll::wait()
   this->new_events[Epoll::READ_EVENTS].clear();
   this->new_events[Epoll::WRITE_EVENTS].clear();
   this->new_events[Epoll::ERROR_EVENTS].clear();
+  this->new_events[Epoll::NEW_CONN].clear();
   nevents = epoll_wait (this->epoll_fd, this->events, MAXEVENTS, -1);
   for(int i = 0; i < nevents; ++i)
     {

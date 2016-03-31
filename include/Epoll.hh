@@ -31,7 +31,7 @@ class                   Epoll
   int                   listen_new_client(int fd, __uint32_t flags);
   void                  init_event_struct(void *data, __uint32_t flags);
   public:
-  enum                  EType {WRITE_EVENTS, READ_EVENTS, ERROR_EVENTS};
+  enum                  EType {WRITE_EVENTS, READ_EVENTS, ERROR_EVENTS, NEW_CONN};
   Epoll();
   Events                new_events;
   int                   delete_client(Client*);

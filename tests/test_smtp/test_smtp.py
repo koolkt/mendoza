@@ -59,16 +59,16 @@ class MySocket:
     def myreceive(self):
         sleep(.3)
         chunks = []
-        self.sock.setblocking(False)
+        # self.sock.setblocking(False)
         chunk = self.sock.recv(4096)
+        if chunk == b'':
+            raise RuntimeError("socket connection broken")
         res = chunk.decode()
         chunks.append(res)
         if res[-2] != '\r':
             chunk = self.sock.recv(4096)
             res = chunk.decode()
             chunks.append(res)
-        if chunk == b'':
-            raise RuntimeError("socket connection broken")
         return ''.join(chunks)
 
 
@@ -76,7 +76,8 @@ class TestBasicSmtp(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         print("Seting up..")
-        subprocess.Popen(['./tests/test_smtp/bin/test2', str(PORT)], stdout=subprocess.DEVNULL)
+        subprocess.Popen(['./tests/test_smtp/bin/test2', str(PORT)]# , stdout=subprocess.DEVNULL
+        )
         sleep(.1)
 
     @classmethod
@@ -98,10 +99,9 @@ class TestBasicSmtp(unittest.TestCase):
         self.assertEqualRcv('250 localhost Ok\r\n')
 
     def test_server_send_mail(self):
-        pass
-        #self.assertEqualRcv('220 localhost ESMTP Mendoza\r\n')
-        # self.s.mysend('HELO [127.0.0.1]\r\n')
-        # self.assertOkRes()
+        self.assertEqualRcv('220 localhost ESMTP Mendoza\r\n')
+        self.s.mysend('HELO [127.0.0.1]\r\n')
+        self.assertOkRes()
         # self.s.mysend('MAIL FROM: thor@viking.net\r\n')
         # self.assertOkRes()
         # self.s.mysend('RCPT TO: leopold@kwame.mendoza.epitech.eu\r\n')

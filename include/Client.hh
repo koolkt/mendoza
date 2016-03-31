@@ -10,7 +10,8 @@ class           Client
   public:
   Client();
   void          set_socket(int fd);
-  std::string const &  get_data() const;
+  std::string const &  get_data();
+  void            send_message(const char *);
   void          set_state(Parser::State);
   int           get_fd() const;
   ~Client();
