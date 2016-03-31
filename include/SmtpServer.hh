@@ -4,6 +4,7 @@
 #include        <Epoll.hh>
 #include        <Parser.hh>
 #include        <Mailbox.hh>
+#include        <algorithm>
 
 class           SmtpServer
 {
@@ -11,6 +12,7 @@ class           SmtpServer
   Epoll         epoll;
   Parser        parser;
   Mailbox       mbox;
+  void          process_events(Events*);
 public:
   SmtpServer(const int port);
   void          run();
