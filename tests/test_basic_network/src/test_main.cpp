@@ -1,6 +1,19 @@
 #include <iostream>
 #include <ServerSocket.hh>
 #include <Epoll.hh>
+#include <algorithm>
+
+int             read_incomming(Client *client)
+{
+  int           br;
+  char          buff[4096];
+
+  br = 1;
+  br = read(client->get_fd(), buff, 4095);
+  buff[br] = '\0';
+  write(client->get_fd(), buff, br);
+  std::cout << buff << std::endl;
+}
 
 int             main(int argc, char **argv)
 {
@@ -9,12 +22,8 @@ int             main(int argc, char **argv)
   ServerSocket  *Server;
   Epoll         *loop;
   Events        *events;
-  char          buff[4096];
-  int           tbr;
 
-  tbr = 0;
-  br = 1;
-  if (argc != 2)
+ if (argc != 2)
     return(0);
   port = atoi(argv[1]);
   Server = new ServerSocket();
@@ -25,31 +34,13 @@ int             main(int argc, char **argv)
     {
       loop->wait();
       events = &loop->new_events;
-      for (std::vector<int>::iterator it = events->at(Epoll::READ_EVENTS).begin() ;
-           it != events->at(Epoll::READ_EVENTS).end();
-           ++it)
-        {
-          tbr = 0;
-          br = 1;
-          while (br > 0 && tbr < 4095)
-            {
-              br = read(*it, buff+tbr, 4095 - tbr);
-              if(br > 0)
-                tbr += br;
-            }
-          buff[tbr] = '\0';
-          std::cout << buff << std::endl;
-          std::cout << tbr << br << std::endl;
-          write(*it, buff, strlen(buff));
-        }
-       for (std::vector<int>::iterator it = events->at(Epoll::ERROR_EVENTS).begin() ;
-            it != events->at(Epoll::ERROR_EVENTS).end();
-            ++it)
-        {
-          loop->delete_fd(*it);
-          std::cout << "Client disconnect" << std::endl;
-        }
+      std::for_each(events->at(Epoll::READ_EVENTS).begin(),
+                    events->at(Epoll::READ_EVENTS).end(),
+                    read_incomming);
+
+      std::for_each(events->at(Epoll::ERROR_EVENTS).begin(),
+                    events->at(Epoll::ERROR_EVENTS).end(),
+                    std::bind1st(std::mem_fun(&Epoll::delete_client), &loop));
     }
-  delete Server;
   return (0);
 }

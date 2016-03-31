@@ -13,14 +13,12 @@
 
 class Socket
 {
-  struct sockaddr_in	s_in;
-  socklen_t		size;
-  int			port;
-  char                  create_socket();
+  int                  create_socket();
  public:
   int			socket_fd;
   Socket();
   Socket(int fd);
+  Socket&               operator=(const Socket &rhs);
   bool                  connectToServer(std::string const & host, short const port);
   static int            srecv(std::string& buffer, int const blocksize, int fd);
   int                   srecv(std::string& buffer, int const blocksize);

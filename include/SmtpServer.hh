@@ -5,6 +5,7 @@
 #include        <Parser.hh>
 #include        <Mailbox.hh>
 #include        <algorithm>
+#include        <Client.hh>
 
 class           SmtpServer
 {
@@ -13,6 +14,7 @@ class           SmtpServer
   Parser        parser;
   Mailbox       mbox;
   void          process_events(Events*);
+  void          process_incomming(Client *);
 public:
   SmtpServer(const int port);
   void          run();

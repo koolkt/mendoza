@@ -16,9 +16,9 @@
 #include                <vector>
 #include                <map>
 #include                <string>
-#define                 INCOMMING_CONNECTION fd == this->server_socket->socket_fd
+#include                <Client.hh>
 
-typedef  std::vector<std::vector<int> > Events;
+typedef  std::vector<std::vector<Client*> > Events;
 
 class                   Epoll
 {
@@ -26,16 +26,16 @@ class                   Epoll
   struct epoll_event	*events;
   int			epoll_fd;
   ServerSocket		*server_socket;
-  int                   handle_read(int const fd);
-  int                   handle_error(int const fd);
-  int                   accept_new_client();
-  int                   add_server_socket();
+  int                   handle_read(Client *);
+  int                   handle_error(Client *);
+  int                   listen_new_client(int fd, __uint32_t flags);
+  void                  init_event_struct(void *data, __uint32_t flags);
   public:
   enum                  EType {WRITE_EVENTS, READ_EVENTS, ERROR_EVENTS};
   Epoll();
   Events                new_events;
-  int                   delete_fd(int const fd);
-  int                   add_fd(int const fd);
+  int                   delete_client(Client*);
+  int                   add_client(Client*);
   int                   init(ServerSocket& socket);
   void                  wait();
   ~Epoll();

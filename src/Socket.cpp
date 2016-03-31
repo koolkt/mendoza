@@ -18,7 +18,16 @@ Socket::Socket(int fd)
   this->socket_fd = fd;
 }
 
-char                    Socket::create_socket()
+
+Socket& Socket::operator=(const Socket &rhs)
+{
+  if (this == &rhs)
+    return *this;
+  this->socket_fd = rhs.socket_fd;
+  return *this;
+}
+
+int                    Socket::create_socket()
 {
   struct protoent		*s_p;
 

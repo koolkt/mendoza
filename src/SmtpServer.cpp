@@ -1,24 +1,31 @@
 #include                <SmtpServer.hh>
 
-void             read_func(int fd)
+void             SmtpServer::process_incomming(Client *client)
 {
-
+  this->parser.parse(client);
+  // send_smtp_response(client);
+  return;
 }
+
+// void            send_smtp_response(Client *client)
+// {
+
+// }
 
 SmtpServer::SmtpServer(const int port)
 {
   this->server_socket.init(port);
 }
 
-void            SmtpServer::process_events(Events   *events)
+void            SmtpServer::process_events(Events *events)
 {
   std::for_each(events->at(Epoll::READ_EVENTS).begin(),
                 events->at(Epoll::READ_EVENTS).end(),
-                read_func);
+                std::bind1st(std::mem_fun(&SmtpServer::process_incomming), this));
 
   std::for_each(events->at(Epoll::ERROR_EVENTS).begin(),
                 events->at(Epoll::ERROR_EVENTS).end(),
-                std::bind1st(std::mem_fun(&Epoll::delete_fd), &this->epoll));
+                std::bind1st(std::mem_fun(&Epoll::delete_client), &this->epoll));
 }
 
 void            SmtpServer::run()
