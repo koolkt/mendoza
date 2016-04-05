@@ -57,9 +57,8 @@ class MySocket:
             raise RuntimeError("socket connection broken")
 
     def myreceive(self):
-        sleep(.3)
         chunks = []
-        # self.sock.setblocking(False)
+        self.sock.setblocking(False)
         chunk = self.sock.recv(4096)
         if chunk == b'':
             raise RuntimeError("socket connection broken")
@@ -75,9 +74,7 @@ class MySocket:
 class TestBasicSmtp(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        print("Seting up..")
-        subprocess.Popen(['./tests/test_smtp/bin/test2', str(PORT)]# , stdout=subprocess.DEVNULL
-        )
+        subprocess.Popen(['./tests/test_smtp/bin/test2', str(PORT)], stdout=subprocess.DEVNULL)
         sleep(.1)
 
     @classmethod
@@ -92,26 +89,29 @@ class TestBasicSmtp(unittest.TestCase):
         self.s.close()
 
     def assertEqualRcv(self,string):
+        sleep(.01)
         res = self.s.myreceive()
         self.assertEqual(res, string)
 
     def assertOkRes(self):
+        sleep(.01)
         self.assertEqualRcv('250 localhost Ok\r\n')
 
     def test_server_send_mail(self):
+        sleep(.01)
         self.assertEqualRcv('220 localhost ESMTP Mendoza\r\n')
         self.s.mysend('HELO [127.0.0.1]\r\n')
         self.assertOkRes()
-        # self.s.mysend('MAIL FROM: thor@viking.net\r\n')
-        # self.assertOkRes()
-        # self.s.mysend('RCPT TO: leopold@kwame.mendoza.epitech.eu\r\n')
-        # self.assertOkRes()
-        # self.s.mysend('DATA\r\n')
-        # self.assertEqualRcv('354 End data with <CR><LF>.<CR><LF>\r\n')
-        # self.s.mysend('Hello World\n\r\n.\r\n')
-        # self.assertOkRes()
-        # self.s.mysend('QUIT\r\n')
-        # self.assertEqualRcv('221 Bye\r\n')
+        self.s.mysend('MAIL FROM: thor@viking.net\r\n')
+        self.assertOkRes()
+        self.s.mysend('RCPT TO: leopold@kwame.mendoza.epitech.eu\r\n')
+        self.assertOkRes()
+        self.s.mysend('DATA\r\n')
+        self.assertEqualRcv('354 End data with <CR><LF>.<CR><LF>\r\n')
+        self.s.mysend('Hello World\n\r\n.\r\n')
+        self.assertOkRes()
+        self.s.mysend('QUIT\r\n')
+        self.assertEqualRcv('221 Bye\r\n')
 
 if __name__ == '__main__':
     unittest.main()

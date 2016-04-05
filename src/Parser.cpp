@@ -34,10 +34,23 @@ Parser::Parser()
 
 void                    Parser::parse(Client *client)
 {
-  std::string     data;
+  const std::string     *data;
 
-  data = client->get_data();
-  std::cerr << data << std::endl;
+  data = &client->get_data();
+  if (data->compare(0,4,"HELO") == 0)
+    client->send_message("250 localhost Ok\r\n");
+  else if (data->compare(0,4,"EHLO") == 0)
+    client->send_message("502 \r\n");
+  else if (data->compare(0,9,"MAIL FROM") == 0)
+    client->send_message("250 localhost Ok\r\n");
+  else if (data->compare(0,7,"RCPT TO") == 0)
+    client->send_message("250 localhost Ok\r\n");
+  else if (data->compare(0,4,"DATA") == 0)
+    client->send_message("354 End data with <CR><LF>.<CR><LF>\r\n");
+  else if (data->compare(0,4,"QUIT") == 0)
+    client->send_message("221 Bye\r\n");
+  else
+    client->send_message("250 localhost Ok\r\n");
 }
 
 Parser::~Parser()

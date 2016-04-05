@@ -48,10 +48,9 @@ class MySocket:
 class TestBasicNetwork(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        print("Seting up..")
         # subprocess.Popen(['bin/test1', str(PORT)], stdout=subprocess.DEVNULL)
         subprocess.Popen(['/bin/bash', '-c', './tests/test_basic_network/bin/test1 '+str(PORT)+
-                          ' > tests/test_basic_network/test_log'])
+                          ' > tests/test_basic_network/test_log'], stderr=subprocess.DEVNULL)
         sleep(.1)
 
     @classmethod
