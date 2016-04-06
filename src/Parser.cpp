@@ -57,8 +57,7 @@ bool                    Parser::data(Client *client)
 bool                    get_adress(std::string s)
 {
   std::smatch m;
-  // std::regex e ("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b");
-  std::regex e ("\\b(sub)([^ ]*)");
+  std::regex e ("([A-Z0-9a-z._%+-]+)@([A-Za-z0-9.-]+\\.[A-Za-z]{2,6})",std::regex::ECMAScript);
 
   std::cout << "Test Regexp" << std::endl;
   while (std::regex_search (s,m,e)) {
