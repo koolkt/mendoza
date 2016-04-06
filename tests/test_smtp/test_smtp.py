@@ -74,12 +74,13 @@ class MySocket:
 class TestBasicSmtp(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        subprocess.Popen(['./tests/test_smtp/bin/test2', str(PORT)], stdout=subprocess.DEVNULL)
+        subprocess.Popen(['./tests/test_smtp/bin/test2', str(PORT)]# , stdout=subprocess.DEVNULL
+        )
         sleep(.1)
 
     @classmethod
     def tearDownClass(cls):
-        subprocess.run(['/bin/bash', '-c', 'killall test2'], stdout=subprocess.DEVNULL)
+        subprocess.Popen(['/bin/bash', '-c', 'killall test2'], stdout=subprocess.DEVNULL)
 
     def setUp(self):
         self.s = MySocket()

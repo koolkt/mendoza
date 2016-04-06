@@ -13,6 +13,7 @@ class           Client
   std::string const &  get_data();
   void            send_message(const char *);
   void          set_state(Parser::State);
+  Parser::State const & get_last_state() const;
   int           get_fd() const;
   ~Client();
 };

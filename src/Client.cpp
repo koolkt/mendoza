@@ -2,6 +2,7 @@
 
 Client::Client()
 {
+  this->last_state = Parser::START;
 }
 
 void            Client::set_socket(int fd)
@@ -24,6 +25,11 @@ std::string const&  Client::get_data()
 {
   this->socket.srecv(this->buffer, 4096);
   return(this->buffer);
+}
+
+Parser::State const & Client::get_last_state() const
+{
+  return(this->last_state);
 }
 
 void            Client::set_state(Parser::State new_state)

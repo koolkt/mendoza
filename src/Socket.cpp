@@ -76,6 +76,8 @@ int                   Socket::srecv(std::string& buffer, int const blocksize)
   ssize_t               br;
 
   br = recv(this->socket_fd, b, blocksize-1,0);
+  if (br <= 0)
+    return(br);
   b[br] = '\0';
   buffer = std::string(b);
   return (br);
