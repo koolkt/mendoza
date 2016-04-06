@@ -1,5 +1,7 @@
 #pragma once
 #include        <iostream>
+#include        <regex>
+#include        <string>
 
 class           Client;
 class           Parser

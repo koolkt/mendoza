@@ -54,6 +54,21 @@ bool                    Parser::data(Client *client)
   return false;
 }
 
+bool                    get_adress(std::string s)
+{
+  std::smatch m;
+  // std::regex e ("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b");
+  std::regex e ("\\b(sub)([^ ]*)");
+
+  std::cout << "Test Regexp" << std::endl;
+  while (std::regex_search (s,m,e)) {
+    for (auto x:m) std::cout << x << " ";
+    std::cout << std::endl;
+    s = m.suffix().str();
+  }
+  return true;
+}
+
 bool                    Parser::rcpt_to(Client *client)
 {
   const std::string     *data;
@@ -61,6 +76,7 @@ bool                    Parser::rcpt_to(Client *client)
   data = &client->get_data();
   if (data->compare(0,7,"RCPT TO") == 0)
     {
+      get_adress(*data);
       client->set_state(Parser::RCPT);
       return true;
     }

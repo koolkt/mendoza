@@ -19,7 +19,7 @@ TESTS =		$(TEST1) $(TEST2)
 
 CC =		g++
 
-CFLAGS =	-Wall -Werror -Wextra -g
+CFLAGS =	-std=c++11 -Wall -Werror -Wextra -g
 
 RM =		rm -f
 
