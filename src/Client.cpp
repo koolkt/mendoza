@@ -25,6 +25,10 @@ void            Client::send_message(std::string& msg)
   this->socket.ssend(msg);
 }
 
+Mail&          Client::get_mail()
+{
+  return this->mail;
+}
 
 std::string const&  Client::get_data()
 {

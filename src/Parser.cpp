@@ -27,17 +27,18 @@
 // # .
 // # 250
 // # QUIT
-
+#define UNUSED(x) (void)(x)
 Parser::Parser()
 {
 }
 
 bool                    Parser::parse_mail(Client *client)
 {
-  // const std::string     *data;
+  const std::string     *data;
 
-  // data = &client->get_data();
-  client->set_state(Parser::START);
+  data = &client->get_data();
+  std::cout << *data << std::endl;
+  client->set_state(Parser::MAIL_PARSED);
   return(true);
 }
 
@@ -125,24 +126,18 @@ Parser::Action         Parser::parse(Client *client)
       (helo(client) || mail_from(client) || rcpt_to(client)))
     {
       return Parser::OK;
-      // client->send_message("250 localhost Ok\r\n");
     }
   else if (last_state == Parser::RCPT && data(client))
     {
       return Parser::END_DATA;
-      // client->send_message("354 End data with <CR><LF>.<CR><LF>\r\n");
     }
   else if (last_state == Parser::DATA)
     {
       parse_mail(client);
       return Parser::OK;
-      // client->send_message("250 localhost Ok\r\n");
     }
   else if (cdata->compare(0,4,"QUIT") == 0)
-    return Parser::BYE; // client->send_message("221 Bye\r\n");
-  // else
-  //   return Parser::NOT_IMP;// client->send_message("502 comand not implemented Ok\r\n");
-
+    return Parser::BYE;
   return Parser::NOT_IMP;;
 }
 

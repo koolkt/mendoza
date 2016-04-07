@@ -15,9 +15,9 @@ class           Parser
 public:
   enum          State {START, HELO, MAIL,
                        RCPT, DATA, RSET,
-                       VRFY, NOOP, QUIT};
+                       VRFY, NOOP, QUIT, MAIL_PARSED};
 
-  enum          Action {OK, END_DATA, BYE, NOT_IMP};
+  enum          Action {OK, END_DATA, BYE, NOT_IMP, MAIL_NA};
 
   Parser();
   Action  parse(Client *);

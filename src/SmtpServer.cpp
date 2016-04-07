@@ -5,6 +5,20 @@ void             SmtpServer::process_incomming(Client *client)
   Parser::Action        r;
 
   r = this->parser.parse(client);
+  if (client->get_last_state() ==  Parser::RCPT)
+    {
+      if (!this->mbox.user_exists(client->get_mail()))
+        {
+          r = Parser::MAIL_NA;
+          // Erase mail?
+        }
+    }
+  else if (client->get_last_state() ==  Parser::MAIL_PARSED)
+    {
+      this->mbox.send_mail(client->get_mail());
+      client->set_state(Parser::START);
+      // client->reset();
+    }
   client->send_message(*this->responses->at(r));
   return;
 }
@@ -23,6 +37,7 @@ SmtpServer::SmtpServer(const int port)
   (*this->responses)[Parser::END_DATA] = new std::string("354 End data with <CR><LF>.<CR><LF>\r\n");
   (*this->responses)[Parser::BYE] = new std::string("221 Bye\r\n");
   (*this->responses)[Parser::NOT_IMP] = new std::string("502 comand not implemented Ok\r\n");
+  (*this->responses)[Parser::MAIL_NA] = new std::string("450 Requested mail action not taken: mailbox unavailable\r\n");
 }
 
 void            SmtpServer::process_events(Events *events)
@@ -56,5 +71,6 @@ SmtpServer::~SmtpServer()
   delete (*this->responses)[Parser::END_DATA];
   delete (*this->responses)[Parser::BYE];
   delete (*this->responses)[Parser::NOT_IMP];
+  delete (*this->responses)[Parser::MAIL_NA];
   delete this->responses;
 }
