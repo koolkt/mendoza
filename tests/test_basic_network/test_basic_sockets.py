@@ -1,7 +1,7 @@
 import unittest
-import subprocess
 import socket
 from time import sleep
+import subprocess
 
 TESTMSG = 'Hello World'
 MSGLEN = len(TESTMSG)
@@ -46,24 +46,22 @@ class MySocket:
 
 
 class TestBasicNetwork(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        # subprocess.Popen(['bin/test1', str(PORT)], stdout=subprocess.DEVNULL)
-        subprocess.Popen(['/bin/bash', '-c', './tests/test_basic_network/bin/test1 '+str(PORT)+
-                          ' > tests/test_basic_network/test_log'], stderr=subprocess.DEVNULL)
-        sleep(.1)
+    def setUp(self):
+        self.p = subprocess.Popen(['/bin/bash', '-c', './tests/test_basic_network/bin/test1 '+str(PORT)],
+                                  stderr=subprocess.DEVNULL, stdout=subprocess.PIPE, universal_newlines=True)
+        sleep(.01)
 
-    @classmethod
-    def tearDownClass(cls):
-        subprocess.run(['/bin/bash', '-c', 'killall test1'], stdout=subprocess.DEVNULL)
+    def tearDown(self):
+        self.p.stdout.close()
 
     def test_server_rcv(self):
         s = MySocket()
         s.connect('localhost', PORT)
         s.mysend(str.encode(TESTMSG))
-        with open('tests/test_basic_network/test_log','r') as f:
-            self.assertTrue(TESTMSG in f.read())
+        sleep(.005)
         s.close()
+        self.p.kill()
+        self.assertTrue(TESTMSG in self.p.stdout.read())
 
     def test_server_send(self):
         s = MySocket()
@@ -72,6 +70,7 @@ class TestBasicNetwork(unittest.TestCase):
         sleep(.1)
         msg = s.myreceive()
         s.close()
+        self.p.kill()
         self.assertEqual(msg.decode(),TESTMSG)
 
 if __name__ == '__main__':

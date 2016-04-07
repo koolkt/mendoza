@@ -56,7 +56,7 @@ $(SERVER):	$(SRVR_OBJ) $(DEPS)
 		$(CC) $(CFLAGS) $(INC) $(SRVR_OBJ) -o $@
 
 run_tests:	$(TESTS)
-		python -m unittest
+		python3 -m unittest
 
 test_basic :	$(TEST1)
 
