@@ -17,7 +17,7 @@ void             SmtpServer::process_incomming(Client *client)
     {
       this->mbox.send_mail(client->get_mail());
       client->set_state(Parser::START);
-      // client->reset();
+      client->get_mail().reset();
     }
   client->send_message(*this->responses->at(r));
   return;

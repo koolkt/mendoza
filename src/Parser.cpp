@@ -37,6 +37,7 @@ bool                    Parser::parse_mail(Client *client)
   const std::string     *data;
 
   data = &client->get_data();
+  client->get_mail().set_body(*data);
   std::cout << *data << std::endl;
   client->set_state(Parser::MAIL_PARSED);
   return(true);
