@@ -107,6 +107,8 @@ class TestBasicSmtp(unittest.TestCase):
         self.assertOkRes()
         self.s.mysend('RCPT TO: leopold@kwame.mendoza.epitech.eu\r\n')
         self.assertOkRes()
+        self.s.mysend('RCPT TO: leopold@kwame.mendoza.epitech.eu\r\n')
+        self.assertOkRes()
         self.s.mysend('DATA\r\n')
         self.assertEqualRcv('354 End data with <CR><LF>.<CR><LF>\r\n')
         self.s.mysend('Hello World\n\r\n.\r\n')

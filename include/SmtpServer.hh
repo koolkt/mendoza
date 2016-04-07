@@ -7,6 +7,8 @@
 #include        <algorithm>
 #include        <Client.hh>
 
+typedef std::vector<std::string*> Responses;
+
 class           SmtpServer
 {
   ServerSocket  server_socket;
@@ -16,6 +18,7 @@ class           SmtpServer
   void          process_events(Events*);
   void          process_incomming(Client *);
   void          process_new(Client *);
+  Responses     *responses;
 public:
   SmtpServer(const int port);
   void          run();

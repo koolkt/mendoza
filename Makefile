@@ -47,7 +47,7 @@ build/%.o : src/%.cpp
 	$(CC) $(CFLAGS) -c $< $(INC) -o $@
 
 tests/%/build/test_main.o : tests/%/src/test_main.cpp
-	$(CC) -c $< $(INC) -o $@
+	$(CC) $(CFLAGS) -c $< $(INC) -o $@
 
 all:		$(SERVER) $(TEST1)
 

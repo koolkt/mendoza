@@ -41,7 +41,6 @@ int                    Socket::create_socket()
     {
       return(EXIT_FAILURE);
     }
-  std::cout << "Socket created" << std::endl;
   return (EXIT_SUCCESS);
 }
 

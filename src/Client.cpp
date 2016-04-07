@@ -20,6 +20,11 @@ void            Client::send_message(const char *msg)
   this->socket.ssend(std::string(msg));
 }
 
+void            Client::send_message(std::string& msg)
+{
+  this->socket.ssend(msg);
+}
+
 
 std::string const&  Client::get_data()
 {

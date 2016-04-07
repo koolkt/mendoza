@@ -2,16 +2,12 @@
 
 void             SmtpServer::process_incomming(Client *client)
 {
-  // std::cout << "New read" << std::endl;
-  this->parser.parse(client);
-  // send_smtp_response(client);
+  Parser::Action        r;
+
+  r = this->parser.parse(client);
+  client->send_message(*this->responses->at(r));
   return;
 }
-
-// void            send_smtp_response(Client *client)
-// {
-
-// }
 
 void          SmtpServer::process_new(Client *client)
 {
@@ -22,6 +18,11 @@ void          SmtpServer::process_new(Client *client)
 SmtpServer::SmtpServer(const int port)
 {
   this->server_socket.init(port);
+  this->responses = new Responses(10);
+  (*this->responses)[Parser::OK] = new std::string("250 localhost Ok\r\n");
+  (*this->responses)[Parser::END_DATA] = new std::string("354 End data with <CR><LF>.<CR><LF>\r\n");
+  (*this->responses)[Parser::BYE] = new std::string("221 Bye\r\n");
+  (*this->responses)[Parser::NOT_IMP] = new std::string("502 comand not implemented Ok\r\n");
 }
 
 void            SmtpServer::process_events(Events *events)
@@ -51,4 +52,9 @@ void            SmtpServer::run()
 
 SmtpServer::~SmtpServer()
 {
+  delete (*this->responses)[Parser::OK];
+  delete (*this->responses)[Parser::END_DATA];
+  delete (*this->responses)[Parser::BYE];
+  delete (*this->responses)[Parser::NOT_IMP];
+  delete this->responses;
 }

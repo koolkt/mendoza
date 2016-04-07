@@ -16,7 +16,10 @@ public:
   enum          State {START, HELO, MAIL,
                        RCPT, DATA, RSET,
                        VRFY, NOOP, QUIT};
+
+  enum          Action {OK, END_DATA, BYE, NOT_IMP};
+
   Parser();
-  void  parse(Client *);
+  Action  parse(Client *);
   ~Parser();
 };

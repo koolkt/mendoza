@@ -54,18 +54,21 @@ bool                    Parser::data(Client *client)
   return false;
 }
 
-bool                    get_adress(std::string s)
+std::vector<std::string>        get_adress(std::string s)
 {
+  std::vector<std::string> r;
   std::smatch m;
   std::regex e ("([A-Z0-9a-z._%+-]+)@([A-Za-z0-9.-]+\\.[A-Za-z]{2,6})");
 
-  std::cout << "Test Regexp" << std::endl;
   while (std::regex_search (s,m,e)) {
-    for (auto x:m) std::cout << x << " ";
+    for (auto x:m) {
+      std::cout << x << " ";
+      r.push_back(x);
+      }
     std::cout << std::endl;
     s = m.suffix().str();
   }
-  return true;
+  return r;
 }
 
 bool                    Parser::rcpt_to(Client *client)
@@ -111,7 +114,7 @@ bool                    Parser::helo(Client *client)
   return (data->compare(0,4,"HELO") == 0);
 }
 
-void                    Parser::parse(Client *client)
+Parser::Action         Parser::parse(Client *client)
 {
   Parser::State   last_state;
   const std::string     *cdata;
@@ -121,23 +124,26 @@ void                    Parser::parse(Client *client)
   if (((last_state == Parser::START) || (last_state == Parser::RCPT)) &&
       (helo(client) || mail_from(client) || rcpt_to(client)))
     {
-      client->send_message("250 localhost Ok\r\n");
+      return Parser::OK;
+      // client->send_message("250 localhost Ok\r\n");
     }
   else if (last_state == Parser::RCPT && data(client))
     {
-      client->send_message("354 End data with <CR><LF>.<CR><LF>\r\n");
+      return Parser::END_DATA;
+      // client->send_message("354 End data with <CR><LF>.<CR><LF>\r\n");
     }
   else if (last_state == Parser::DATA)
     {
       parse_mail(client);
-      client->send_message("250 localhost Ok\r\n");
+      return Parser::OK;
+      // client->send_message("250 localhost Ok\r\n");
     }
   else if (cdata->compare(0,4,"QUIT") == 0)
-    client->send_message("221 Bye\r\n");
-  else
-    client->send_message("502 comand not implemented Ok\r\n");
+    return Parser::BYE; // client->send_message("221 Bye\r\n");
+  // else
+  //   return Parser::NOT_IMP;// client->send_message("502 comand not implemented Ok\r\n");
 
-  return;
+  return Parser::NOT_IMP;;
 }
 
 Parser::~Parser()
