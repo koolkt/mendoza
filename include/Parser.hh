@@ -2,6 +2,7 @@
 #include        <iostream>
 #include        <regex>
 #include        <string>
+#include        <vector>
 
 class           Client;
 class           Parser
@@ -12,6 +13,7 @@ class           Parser
   bool          ehlo(Client *client);
   bool          helo(Client *client);
   bool          parse_mail(Client *client);
+  std::vector<std::string>*     get_adress(std::string s);
 public:
   enum          State {START, HELO, MAIL,
                        RCPT, DATA, RSET,
