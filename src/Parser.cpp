@@ -11,9 +11,8 @@ bool                    Parser::parse_mail(Client *client)
 
   data = &client->get_data();
   client->get_mail().set_body(*data);
-  std::cout << *data << std::endl;
   client->set_state(Parser::MAIL_PARSED);
-  return(true);
+  return true;
 }
 
 bool                    Parser::data(Client *client)
@@ -31,15 +30,18 @@ bool                    Parser::data(Client *client)
 
 std::vector<std::string>*        Parser::get_adress(std::string s)
 {
+  std::string   *str;
   std::vector<std::string> *r;
   std::smatch m;
   std::regex e ("([A-Z0-9a-z._%+-]+)@([A-Za-z0-9.-]+\\.[A-Za-z]{2,6})");
 
-  r = new std::vector<std::string>(5);
+  r = new std::vector<std::string>;
   while (std::regex_search (s,m,e)) {
-    for (auto x:m) {
-      std::cout << x << " ";
-      r->push_back(x);
+    for (auto x:m)
+      {
+        std::cout << x << " ";
+        str = new std::string(x);
+        r->push_back(*str);
       }
     std::cout << std::endl;
     s = m.suffix().str();
