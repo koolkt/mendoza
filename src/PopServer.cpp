@@ -7,12 +7,13 @@ PopServer::PopServer()
 
 void  PopServer::process_incomming(Client *client)
 {
-  UNUSED(client);
+  client->send_message("+OK 0 0\r\n");
 }
 
 void  PopServer::process_new(Client *client)
 {
-  UNUSED(client);
+  std::cout << "New Client connected" << std::endl;
+  client->send_message("+OK POP3 server ready\r\n");
 }
 
 PopServer::~PopServer()
