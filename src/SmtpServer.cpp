@@ -1,9 +1,11 @@
 #include                <SmtpServer.hh>
 
-void             SmtpServer::process_incomming(Client *client)
+void             SmtpServer::process_incomming(Client *vclient)
 {
+  SmtpClient    *client;
   SmtpParser::Action        r;
 
+  client = (SmtpClient*)vclient;
   r = this->parser.parse(client);
   if (client->get_last_state() ==  SmtpParser::RCPT)
     {

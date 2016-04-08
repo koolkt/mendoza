@@ -4,15 +4,15 @@
 #include        <string>
 #include        <vector>
 
-class           Client;
+class           SmtpClient;
 class           SmtpParser
 {
-  bool          data(Client *client);
-  bool          rcpt_to(Client *client);
-  bool          mail_from(Client *client);
-  bool          ehlo(Client *client);
-  bool          helo(Client *client);
-  bool          parse_mail(Client *client);
+  bool          data(SmtpClient *client);
+  bool          rcpt_to(SmtpClient *client);
+  bool          mail_from(SmtpClient *client);
+  bool          ehlo(SmtpClient *client);
+  bool          helo(SmtpClient *client);
+  bool          parse_mail(SmtpClient *client);
   std::vector<std::string>*     get_adress(std::string s);
 public:
   enum          State {START, HELO, MAIL,
@@ -22,6 +22,6 @@ public:
   enum          Action {OK, END_DATA, BYE, NOT_IMP, MAIL_NA};
 
   SmtpParser();
-  Action  parse(Client *);
+  Action  parse(SmtpClient *);
   ~SmtpParser();
 };

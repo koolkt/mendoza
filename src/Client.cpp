@@ -1,8 +1,8 @@
 #include                <Client.hh>
+#define UNUSED(x) (void)(x)
 
 Client::Client()
 {
-  this->last_state = SmtpParser::START;
 }
 
 void            Client::set_socket(int fd)
@@ -38,12 +38,24 @@ std::string const&  Client::get_data()
 
 SmtpParser::State const & Client::get_last_state() const
 {
-  return(this->last_state);
+  return(*(new SmtpParser::State));
 }
 
 void            Client::set_state(SmtpParser::State new_state)
 {
-  this->last_state = new_state;
+  UNUSED(new_state);
+  return;
+}
+
+PopParser::State const & Client::getp_last_state() const
+{
+  return(*(new PopParser::State));
+}
+
+void            Client::setp_state(PopParser::State new_state)
+{
+  UNUSED(new_state);
+  return;
 }
 
 Client::~Client()
