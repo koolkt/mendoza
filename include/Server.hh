@@ -1,13 +1,20 @@
 #pragma once
-#include <iostream>
-#include <ServerSocket.hh>
-#include <Epoll.hh>
+#include        <Client.hh>
+#include        <algorithm>
+#include        <Epoll.hh>
+#include        <ServerSocket.hh>
+#include        <iostream>
 
 class           Server
 {
-  ServerSocket  server_socket;
+protected:
   Epoll         epoll;
+  ServerSocket  server_socket;
+  virtual void  process_incomming(Client *) = 0;
+  virtual void  process_new(Client *) = 0;
+  void          process_events(Events*);
 public:
   Server();
-  ~Server();
+  void run();
+  virtual ~Server();
 };

@@ -1,26 +1,18 @@
 #pragma once
-#include        <iostream>
-#include        <ServerSocket.hh>
-#include        <Epoll.hh>
 #include        <SmtpParser.hh>
 #include        <Mailbox.hh>
-#include        <algorithm>
-#include        <Client.hh>
+#include        <Server.hh>
 
 typedef std::vector<std::string*> Responses;
 
-class           SmtpServer
+class           SmtpServer: public Server
 {
-  ServerSocket  server_socket;
-  Epoll         epoll;
-  SmtpParser        parser;
+  SmtpParser    parser;
   Mailbox       mbox;
-  void          process_events(Events*);
-  void          process_incomming(Client *);
-  void          process_new(Client *);
+  virtual void  process_incomming(Client *);
+  virtual void  process_new(Client *);
   Responses     *responses;
 public:
   SmtpServer(const int port);
-  void          run();
-  ~SmtpServer();
+  virtual ~SmtpServer();
 };

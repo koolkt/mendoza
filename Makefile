@@ -69,7 +69,7 @@ $(TEST2):	$(TEST_OBJ) $(DEPS) $(MAIN2_OBJ)
 		$(CC) $(CFLAGS) $(INC) $(MAIN2_OBJ) $(TEST_OBJ) -o $@
 
 clean_tests:
-			$(RM) $(TEST1_OBJ) $(TEST2_OBJ) $(TEST_OBJ)
+			$(RM) $(TEST1_OBJ) $(TEST2_OBJ) $(TEST_OBJ) $(MAIN1_OBJ) $(MAIN2_OBJ)
 
 clean:
 			$(RM) $(SRVR_OBJ)
@@ -79,4 +79,6 @@ fclean:		clean clean_tests
 
 re:			fclean $(SERVER) $(TESTS)
 
-.PHONY:			all clean fclean re clean_tests run_tests
+re_tests:		fclean run_tests
+
+.PHONY:			all clean fclean re clean_tests run_tests re_tests

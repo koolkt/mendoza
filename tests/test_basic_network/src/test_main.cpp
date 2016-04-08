@@ -3,7 +3,7 @@
 #include <Epoll.hh>
 #include <algorithm>
 
-int             read_incomming(Client *client)
+void             read_incomming(Client *client)
 {
   int           br;
   char          buff[4096];
@@ -18,7 +18,6 @@ int             read_incomming(Client *client)
 int             main(int argc, char **argv)
 {
   int           port;
-  int           br;
   ServerSocket  *Server;
   Epoll         *loop;
   Events        *events;
