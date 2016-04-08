@@ -4,6 +4,7 @@
 #include        <Server.hh>
 #include        <iostream>
 #include        <Server.hh>
+#include        <PopClient.hh>
 
 typedef std::vector<std::string*> Responses;
 class           PopServer : public Server

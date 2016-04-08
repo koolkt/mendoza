@@ -4,7 +4,7 @@
 #include        <string>
 #include        <vector>
 
-class           Client;
+class           PopClient;
 class           PopParser
 {
 public:
@@ -14,6 +14,6 @@ public:
 
   enum          Action {OK, END_DATA, BYE, NOT_IMP, MAIL_NA};
   PopParser();
-  Action  parse(Client *);
+  Action  parse(PopClient *);
   ~PopParser();
 };
