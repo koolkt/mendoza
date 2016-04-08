@@ -2,7 +2,7 @@
 
 Client::Client()
 {
-  this->last_state = Parser::START;
+  this->last_state = SmtpParser::START;
 }
 
 void            Client::set_socket(int fd)
@@ -36,12 +36,12 @@ std::string const&  Client::get_data()
   return(this->buffer);
 }
 
-Parser::State const & Client::get_last_state() const
+SmtpParser::State const & Client::get_last_state() const
 {
   return(this->last_state);
 }
 
-void            Client::set_state(Parser::State new_state)
+void            Client::set_state(SmtpParser::State new_state)
 {
   this->last_state = new_state;
 }

@@ -2,7 +2,7 @@
 #include        <iostream>
 #include        <ServerSocket.hh>
 #include        <Epoll.hh>
-#include        <Parser.hh>
+#include        <SmtpParser.hh>
 #include        <Mailbox.hh>
 #include        <algorithm>
 #include        <Client.hh>
@@ -13,7 +13,7 @@ class           SmtpServer
 {
   ServerSocket  server_socket;
   Epoll         epoll;
-  Parser        parser;
+  SmtpParser        parser;
   Mailbox       mbox;
   void          process_events(Events*);
   void          process_incomming(Client *);

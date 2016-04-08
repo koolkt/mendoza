@@ -1,5 +1,5 @@
 #pragma once
-#include        <Parser.hh>
+#include        <SmtpParser.hh>
 #include        <Socket.hh>
 #include        <Mail.hh>
 
@@ -7,7 +7,7 @@ class           Client
 {
   Socket        socket;
   std::string   buffer;
-  Parser::State last_state;
+  SmtpParser::State last_state;
   Mail          mail;
   public:
   Client();
@@ -16,8 +16,8 @@ class           Client
   std::string const &  get_data();
   void            send_message(const char *);
   void            send_message(std::string& msg);
-  void          set_state(Parser::State);
-  Parser::State const & get_last_state() const;
+  void          set_state(SmtpParser::State);
+  SmtpParser::State const & get_last_state() const;
   int           get_fd() const;
   ~Client();
 };

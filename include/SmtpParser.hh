@@ -5,7 +5,7 @@
 #include        <vector>
 
 class           Client;
-class           Parser
+class           SmtpParser
 {
   bool          data(Client *client);
   bool          rcpt_to(Client *client);
@@ -21,7 +21,7 @@ public:
 
   enum          Action {OK, END_DATA, BYE, NOT_IMP, MAIL_NA};
 
-  Parser();
+  SmtpParser();
   Action  parse(Client *);
-  ~Parser();
+  ~SmtpParser();
 };
