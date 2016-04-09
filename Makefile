@@ -85,9 +85,12 @@ SMTP_TESTS =		$(TEST_SMTP_ECHO) $(TEST_SMTP_PROTO)
 
 tests/smtp_server/%/build/test_main.o : tests/smtp_server/%/src/test_main.cpp
 	$(CC) $(CFLAGS) -c $< $(INC) -o $@
-######
 
-run_tests:	$(SMTP_TESTS)
+TESTS = $(SMTP_TESTS)
+
+#####################################################################################
+
+run_tests:	$(TESTS)
 		python3 -m unittest
 
 test_smtp_echo : $(TEST_SMTP_ECHO)
@@ -101,12 +104,12 @@ $(TEST_SMTP_PROTO):	$(TEST_SMTP_OBJ) $(SMTP_DEPS) $(MAIN_TEST_SMTP_PROTO_OBJ)
 		$(CC) $(CFLAGS) $(INC) $(MAIN_TEST_SMTP_PROTO_OBJ) $(TEST_SMTP_OBJ) -o $@
 
 clean_tests:
-			$(RM) $(TEST_SMTP_OBJ) $(MAIN_TEST_SMTP_ECHO_OBJ)
+			$(RM) $(TEST_SMTP_OBJ) $(MAIN_TEST_SMTP_ECHO_OBJ) $(MAIN_TEST_SMTP_PROTO_OBJ)
 
 clean:
 			$(RM) $(SMTP_OBJ)
 
-fclean:		clean
+fclean:		clean clean_tests
 			$(RM) $(SMTP_SERVER) $(TESTS)
 
 re:			fclean $(SMTP_SERVER)
