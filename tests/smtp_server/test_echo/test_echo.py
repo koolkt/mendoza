@@ -47,7 +47,7 @@ class MySocket:
 
 class TestBasicNetwork(unittest.TestCase):
     def setUp(self):
-        self.p = subprocess.Popen(['/bin/bash', '-c', './tests/test_basic_network/bin/test1 '+str(PORT)],
+        self.p = subprocess.Popen(['/bin/bash', '-c', './tests/smtp_server/test_echo/bin/test_smtp_echo '+str(PORT)],
                                   stderr=subprocess.DEVNULL, stdout=subprocess.PIPE, universal_newlines=True)
         sleep(.01)
 
