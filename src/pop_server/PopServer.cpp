@@ -1,5 +1,5 @@
 #include                <PopServer.hh>
-
+#include                <string>
 #define UNUSED(x) (void)(x)
 
 PopServer::PopServer(const int port)
@@ -9,6 +9,7 @@ PopServer::PopServer(const int port)
 
 void  PopServer::process_incomming(Client *vclient)
 {
+  std::string     res;
   PopClient    *client;
   // PopParser::State   last_state;
   PopParser::Action        r;
@@ -22,6 +23,28 @@ void  PopServer::process_incomming(Client *vclient)
       client->send_message("+OK Capability list follows\r\n");
       client->send_message("USER\r\n");
       client->send_message(".\r\n");
+    }
+  else if((r == PopParser::USER))
+    {
+      res = client->get_data();
+      res.erase(std::remove(res.begin(), res.end(), '\r'), res.end());
+      res.erase(std::remove(res.begin(), res.end(), '\n'), res.end());
+      res = res.substr(5, std::string::npos);
+      client->set_username(res);
+      std::cout <<  res << "END USER STR"<< std::endl;
+      client->send_message("+OK\r\n");
+    }
+   else if((r == PopParser::PASS))
+    {
+      res = client->get_data();
+      res.erase(std::remove(res.begin(), res.end(), '\r'), res.end());
+      res.erase(std::remove(res.begin(), res.end(), '\n'), res.end());
+      res = res.substr(5, std::string::npos);
+      std::cout <<  res << "END PASS STR"<< std::endl;
+      if (this->mbox.auth_user(client->get_username(), res))
+        client->send_message("+OK\r\n");
+      else
+        client->send_message("-ERR\r\n");
     }
   else
     {

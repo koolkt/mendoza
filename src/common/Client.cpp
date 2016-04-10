@@ -36,6 +36,16 @@ std::string const&  Client::get_data()
   return(this->buffer);
 }
 
+std::string const&  Client::get_username() const
+{
+  return(this->username);
+}
+
+void  Client::set_username(std::string u)
+{
+  this->username = u;
+}
+
 SmtpParser::State const & Client::get_last_state() const
 {
   return(*(new SmtpParser::State));

@@ -6,12 +6,15 @@
 
 class           Client
 {
+  std::string   username;
   Socket        socket;
   std::string   buffer;
   Mail          mail;
   public:
   Client();
   Mail &        get_mail();
+  std::string const&  get_username() const;
+  void          set_username(std::string);
   void          set_socket(int fd);
   std::string const &  get_data();
   void          send_message(const char *);

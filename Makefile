@@ -76,7 +76,7 @@ POP_OBJ += $(COMMON_OBJ)
 
 POP_DEPS = $(shell find ./include/pop_server  -name "*.hh")
 
-SMTP_DEPS += $(COMMON_DEPS)
+POP_DEPS += $(COMMON_DEPS)
 
 build/pop_server/%.o : $(SRC_POP_DIR)/%.cpp
 	$(CC) $(CFLAGS) -c $< $(INC) -o $@
@@ -209,6 +209,6 @@ clean:
 fclean:		clean clean_tests
 			$(RM) $(SMTP_SERVER) $(POP_SERVER) $(TESTS)
 
-re:			fclean $(SMTP_SERVER) $(POP_SERVER)
+re:			fclean $(SMTP_SERVER) # $(POP_SERVER)
 
 .PHONY:			all clean fclean re clean_tests run_tests re_tests

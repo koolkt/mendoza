@@ -105,7 +105,6 @@ void                    Epoll::wait()
   nevents = epoll_wait (this->epoll_fd, this->events, MAXEVENTS, -1);
   for(int i = 0; i < nevents; ++i)
     {
-      std::cout << "Server Turn"<< std::endl;
       client = (Client*)this->events[i].data.ptr;
       if (FD_HAS_ERROR_OR_DISCONNECT)
         this->new_events[Epoll::ERROR_EVENTS].push_back(client);

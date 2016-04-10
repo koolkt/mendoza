@@ -4,10 +4,12 @@
 #include        <Epoll.hh>
 #include        <ServerSocket.hh>
 #include        <iostream>
+#include        <Mailbox.hh>
 
 class           Server
 {
 protected:
+  Mailbox       mbox;
   Epoll         epoll;
   ServerSocket  server_socket;
   virtual void  process_incomming(Client *) = 0;
