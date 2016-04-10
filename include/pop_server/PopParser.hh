@@ -7,12 +7,15 @@
 class           PopClient;
 class           PopParser
 {
+  bool                    capa(const std::string *data);
+  bool                    user(const std::string *data);
+  bool                    pass(const std::string *data);
+  bool                    stat(const std::string *data);
+  bool                    quit(const std::string *data);
 public:
-  enum          State {START, HELO, MAIL,
-                       RCPT, DATA, RSET,
-                       VRFY, NOOP, QUIT, MAIL_PARSED};
+  enum          State {START, V_USER, V_PASS, SEND_MAIL};
 
-  enum          Action {OK, END_DATA, BYE, NOT_IMP, MAIL_NA};
+  enum          Action {OK, CAPA, AUTH, USER, PASS, STAT, LIST, RETR, DELE,  QUIT, NOT_IMP};
   PopParser();
   Action  parse(PopClient *);
   ~PopParser();

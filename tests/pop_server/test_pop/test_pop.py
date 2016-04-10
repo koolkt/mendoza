@@ -69,25 +69,34 @@ class TestBasicSmtp(unittest.TestCase):
 
     def assertOkRes(self):
         sleep(.01)
-        self.assertEqualRcv('250 localhost Ok\r\n')
+        self.assertEqualRcv('+OK\r\n')
+
+    def assertCapaRes(self):
+        sleep(.01)
+        self.assertEqualRcv('+OK Capability list follows\r\n')
+
+    def assertCapaRes2(self):
+        sleep(.01)
+        self.assertEqualRcv('USER\r\n.\r\n')
+
+    def assertCapaRes3(self):
+        sleep(.01)
+        self.assertEqualRcv('.\r\n')
 
     def test_server_send_mail(self):
         sleep(.01)
-        self.assertEqualRcv('220 localhost ESMTP Mendoza\r\n')
-        self.s.mysend('HELO [127.0.0.1]\r\n')
+        self.assertEqualRcv('+OK POP3 server ready\r\n')
+        self.s.mysend('CAPA\r\n')
+        self.assertCapaRes()
+        self.assertCapaRes2()
+        self.s.mysend('USER kool@kool.com\r\n')
         self.assertOkRes()
-        self.s.mysend('MAIL FROM: thor@viking.net\r\n')
+        self.s.mysend('PASS koolkat\r\n')
         self.assertOkRes()
-        self.s.mysend('RCPT TO: leopold@kwame.mendoza.epitech.eu\r\n')
-        self.assertOkRes()
-        self.s.mysend('RCPT TO: leopold@kwame.mendoza.epitech.eu\r\n')
-        self.assertOkRes()
-        self.s.mysend('DATA\r\n')
-        self.assertEqualRcv('354 End data with <CR><LF>.<CR><LF>\r\n')
-        self.s.mysend('Hello World\n\r\n.\r\n')
+        self.s.mysend('STAT\r\n')
         self.assertOkRes()
         self.s.mysend('QUIT\r\n')
-        self.assertEqualRcv('221 Bye\r\n')
+        self.assertOkRes()
 
 if __name__ == '__main__':
     unittest.main()
