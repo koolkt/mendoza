@@ -1,8 +1,9 @@
 #include                <PopServer.hh>
 #define UNUSED(x) (void)(x)
 
-PopServer::PopServer()
+PopServer::PopServer(const int port)
 {
+  this->server_socket.init(port);
 }
 
 void  PopServer::process_incomming(Client *client)

@@ -15,6 +15,6 @@ class           PopServer : public Server
   virtual void  process_new(Client *);
   Responses     *responses;
 public:
-  PopServer();
+  PopServer(const int);
   virtual ~PopServer();
 };
