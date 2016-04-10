@@ -29,6 +29,7 @@ int                     Epoll::delete_client(Client *client)
 
   std::cout << "Deleting client" << std::endl;
   r = epoll_ctl(this->epoll_fd, EPOLL_CTL_DEL, client->get_fd(), &this->event);
+  delete client;
   if (r != 0)
     return (EXIT_FAILURE);
   return (EXIT_SUCCESS);

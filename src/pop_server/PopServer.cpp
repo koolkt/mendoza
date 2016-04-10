@@ -31,7 +31,6 @@ void  PopServer::process_incomming(Client *vclient)
       res.erase(std::remove(res.begin(), res.end(), '\n'), res.end());
       res = res.substr(5, std::string::npos);
       client->set_username(res);
-      std::cout <<  res << "END USER STR"<< std::endl;
       client->send_message("+OK\r\n");
     }
    else if((r == PopParser::PASS))
@@ -40,7 +39,6 @@ void  PopServer::process_incomming(Client *vclient)
       res.erase(std::remove(res.begin(), res.end(), '\r'), res.end());
       res.erase(std::remove(res.begin(), res.end(), '\n'), res.end());
       res = res.substr(5, std::string::npos);
-      std::cout <<  res << "END PASS STR"<< std::endl;
       if (this->mbox.auth_user(client->get_username(), res))
         client->send_message("+OK\r\n");
       else
