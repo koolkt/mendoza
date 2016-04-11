@@ -3,19 +3,23 @@
 
 Mailbox::Mailbox()
 {
-  Mbmap mbxs;
   std::string *user;
   std::string *pass;
+  std::string *user2;
+  std::string *pass2;
 
-  mbxs = new std::unordered_map<std::string, std::list<std::string> >;
+  user2 = new std::string("leopold@kwame.mendoza.epitech.eu");
+  pass2 = new std::string("test");
   user = new std::string("kool@kool.com");
   pass = new std::string("koolkat");
-  this->mailboxes = mbxs;
+  this->mailboxes = new std::unordered_map<std::string, std::list<std::string>* >;
   this->usernames.insert(*user);
-  this->usernames.insert(std::string("leopold@kwame.mendoza.epitech.eu"));
+  this->usernames.insert(*user2);
   this->users.insert(std::pair<std::string, std::string >(*user,*pass));
-  this->mailboxes->insert(std::pair<std::string, std::list<std::string> >(*user, std::list<std::string>()));
-  this->mailboxes->insert(std::pair<std::string, std::list<std::string> >(std::string("leopold@kwame.mendoza.epitech.eu"), std::list<std::string>()));
+  this->users.insert(std::pair<std::string, std::string >(*user2,*pass2));
+  this->mailboxes->insert(std::pair<std::string, std::list<std::string>* >(*user, (new std::list<std::string>())));
+  this->mailboxes->insert(std::pair<std::string, std::list<std::string>* >(*user2, (new std::list<std::string>())));
+  this->mailboxes->at(std::string("kool@kool.com"))->push_back("hello");
 }
 
 Mailbox::~Mailbox()
@@ -45,7 +49,7 @@ bool            Mailbox::user_exists(Mail &mail)
 
 bool            Mailbox::send_mail(Mail &mail)
 {
-  this->mailboxes->at(mail.get_dest().at(0)).push_back(mail.get_body());
+  this->mailboxes->at(mail.get_dest().at(0))->push_back(mail.get_body());
   return true;
 }
 
@@ -55,7 +59,7 @@ std::string&            Mailbox::get_mail(const std::string& user)
   std::list<std::string>        *mails;
 
   m = NULL;
-  mails = &this->mailboxes->at(user);
+  mails = this->mailboxes->at(user);
   if(!mails->empty())
     {
       m = &mails->front();
@@ -64,7 +68,18 @@ std::string&            Mailbox::get_mail(const std::string& user)
   return *m;
 }
 
-int            Mailbox::number_new_mails(const std::string& user)
+std::list<std::string>&         Mailbox::number_new_mails(const std::string& user)
 {
-  return this->mailboxes->at(user).size();
+  std::list<std::string>*       res;
+
+  res = new std::list<std::string>();
+  auto t = this->mailboxes->find(user);
+  if (t == this->mailboxes->end()) return *res;
+  std::transform(this->mailboxes->at(user)->begin(),
+                 this->mailboxes->at(user)->end(),
+                 res->begin(),
+                 [](const std::string& mail) {
+                   return mail.size();
+                 });
+  return *res;
 }

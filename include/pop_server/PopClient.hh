@@ -2,7 +2,6 @@
 
 class           PopClient : public Client
 {
-  PopParser::State last_state;
   public:
   PopClient();
   void          set_state(PopParser::State);

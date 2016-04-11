@@ -9,11 +9,12 @@ PopServer::PopServer(const int port)
 
 void  PopServer::process_incomming(Client *vclient)
 {
+  int n;
   std::string     res;
   PopClient    *client;
-  // PopParser::State   last_state;
   PopParser::Action        r;
 
+  n = 0;
   client = (PopClient*)vclient;
   r = this->parser.parse(client);
   // last_state = client->get_last_state();
@@ -43,6 +44,22 @@ void  PopServer::process_incomming(Client *vclient)
         client->send_message("+OK\r\n");
       else
         client->send_message("-ERR\r\n");
+    }
+  else if ((r == PopParser::STAT))
+    {
+      // int i;
+
+      // i =0;
+      // std::list<std::string> &r = this->mbox.number_new_mails(client->get_username());
+      // res += "+OK " + std::to_string(n) + "\r\n";
+      // client->send_message(res);
+      // for (std::list<std::string>::iterator it = r.begin();
+      //      r.end() != it; it++) {
+      //   i++;
+      //   res = std::to_string(i) + " " + *it +"\r\n";
+      UNUSED(n);
+      client->send_message("+OK\r\n");
+      // }
     }
   else
     {

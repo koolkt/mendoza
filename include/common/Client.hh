@@ -6,6 +6,9 @@
 
 class           Client
 {
+  protected:
+  SmtpParser::State last_state;
+  PopParser::State last_pstate;
   std::string   username;
   Socket        socket;
   std::string   buffer;

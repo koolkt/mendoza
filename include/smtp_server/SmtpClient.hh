@@ -2,7 +2,6 @@
 
 class           SmtpClient : public Client
 {
-  SmtpParser::State last_state;
   public:
   SmtpClient();
   void          set_state(SmtpParser::State);
