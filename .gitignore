@@ -1,5 +1,5 @@
 # Byte-compiled / optimized / DLL files
-tests/*/__pycache__/*
+tests/*/__pycache__/
 *.py[cod]
 *$py.class
 
@@ -113,6 +113,6 @@ ENV/
 *.out
 *.app
 
-bin/*
-tests/*/bin/*
+bin/
+tests/*/bin/
 test_log

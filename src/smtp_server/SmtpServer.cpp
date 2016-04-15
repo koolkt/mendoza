@@ -1,25 +1,25 @@
 #include                <SmtpServer.hh>
 
-void             SmtpServer::process_incomming(Client *vclient)
+void             SmtpServer::process_incomming(Client *client)
 {
   SmtpClient    *client;
   SmtpParser::Action        r;
 
-  client = (SmtpClient*)vclient;
+  client = (SmtpClient*)client->getInfo;
   r = this->parser.parse(client);
-  if (client->get_last_state() ==  SmtpParser::RCPT)
+  if (client->getState() ==  SmtpParser::RCPT)
     {
-      if (!this->mbox.user_exists(client->get_mail()))
+      if (!this->mbox.user_exists(client->getMail()))
         {
           r = SmtpParser::MAIL_NA;
           // Erase mail?
         }
     }
-  else if (client->get_last_state() ==  SmtpParser::MAIL_PARSED)
+  else if (client->getState() ==  SmtpParser::MAIL_PARSED)
     {
-      this->mbox.send_mail(client->get_mail());
+      this->mbox.send_mail(client->getMail());
       client->set_state(SmtpParser::START);
-      client->get_mail().reset();
+      client->getMail().reset();
     }
   client->send_message(*this->responses->at(r));
   return;
@@ -28,6 +28,7 @@ void             SmtpServer::process_incomming(Client *vclient)
 void          SmtpServer::process_new(Client *client)
 {
   std::cout << "New Client connected" << std::endl;
+  client->setInfo((void*)(new SmtpClient()));
   client->send_message("220 localhost ESMTP Mendoza\r\n");
 }
 

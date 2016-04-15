@@ -26,16 +26,16 @@ class                   Epoll
   struct epoll_event	*events;
   int			epoll_fd;
   ServerSocket		*server_socket;
-  int                   handle_read(Client *);
-  int                   handle_error(Client *);
-  int                   listen_new_client(int fd, __uint32_t flags);
-  void                  init_event_struct(void *data, __uint32_t flags);
+  int                   handleRead(Client *);
+  int                   handleError(Client *);
+  int                   listenNewClient(int fd, __uint32_t flags);
+  void                  initEventStruct(void *data, __uint32_t flags);
   public:
   enum                  EType {WRITE_EVENTS, READ_EVENTS, ERROR_EVENTS, NEW_CONN};
   Epoll();
   Events                new_events;
-  int                   delete_client(Client*);
-  int                   add_client(Client*);
+  int                   deleteClient(Client*);
+  int                   addClient(Client*);
   int                   init(ServerSocket& socket);
   void                  wait();
   ~Epoll();

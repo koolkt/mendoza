@@ -1,10 +1,13 @@
-#include        <Client.hh>
+#pragma once
+#include         <SmtpParser.hh>
+#include         <MailClient.hh>
 
-class           SmtpClient : public Client
+class           SmtpClient : public MailClient
 {
+  SmtpParser::State             last_state;
   public:
   SmtpClient();
-  void          set_state(SmtpParser::State);
-  SmtpParser::State const & get_last_state() const;
+  void                          setState(SmtpParser::State);
+  SmtpParser::State const&      getState() const;
   ~SmtpClient();
 };

@@ -12,9 +12,9 @@ protected:
   Mailbox       mbox;
   Epoll         epoll;
   ServerSocket  server_socket;
-  virtual void  process_incomming(Client *) = 0;
-  virtual void  process_new(Client *) = 0;
-  void          process_events(Events*);
+  virtual void  processIncomming(Client *) = 0;
+  virtual void  processNew(Client *) = 0;
+  void          processEvents(Events*);
 public:
   Server();
   void run();

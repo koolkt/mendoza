@@ -50,16 +50,19 @@ void  PopServer::process_incomming(Client *vclient)
       // int i;
 
       // i =0;
-      // std::list<std::string> &r = this->mbox.number_new_mails(client->get_username());
-      // res += "+OK " + std::to_string(n) + "\r\n";
-      // client->send_message(res);
-      // for (std::list<std::string>::iterator it = r.begin();
-      //      r.end() != it; it++) {
+      for(auto i: this->mbox.number_new_mails(client->get_username()))
+        client->send_message(i);
+      // if (r->empty())
+      //   return;
+       res += "+OK""\r\n";
+      // for (std::list<std::string>::iterator it = r->begin();
+      //      r->end() != it; it++) {
       //   i++;
-      //   res = std::to_string(i) + " " + *it +"\r\n";
-      UNUSED(n);
-      client->send_message("+OK\r\n");
+         client->send_message(res);
       // }
+            UNUSED(n);
+      UNUSED(r);
+
     }
   else
     {

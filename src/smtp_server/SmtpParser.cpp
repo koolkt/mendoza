@@ -9,9 +9,9 @@ bool                    SmtpParser::parse_mail(SmtpClient *client)
 {
   const std::string     *data;
 
-  data = &client->get_data();
-  client->get_mail().set_body(*data);
-  client->set_state(SmtpParser::MAIL_PARSED);
+  data = &client->rcv();
+  client->getMail().set_body(*data);
+  client->setState(SmtpParser::MAIL_PARSED);
   return true;
 }
 
@@ -19,10 +19,10 @@ bool                    SmtpParser::data(SmtpClient *client)
 {
   const std::string     *data;
 
-  data = &client->get_data();
+  data = &client->rcv();
   if (data->compare(0,4,"DATA") == 0)
     {
-      client->set_state(SmtpParser::DATA);
+      client->setState(SmtpParser::DATA);
       return true;
     }
   return false;
@@ -53,11 +53,11 @@ bool                    SmtpParser::rcpt_to(SmtpClient *client)
 {
   std::string     data;
 
-  data = client->get_data();
+  data = client->rcv();
   if (data.compare(0,7,"RCPT TO") == 0)
     {
-      client->get_mail().set_dest(get_adress(data));
-      client->set_state(SmtpParser::RCPT);
+      client->getMail().set_dest(get_adress(data));
+      client->setState(SmtpParser::RCPT);
       return true;
     }
   return false;
@@ -67,10 +67,10 @@ bool                    SmtpParser::mail_from(SmtpClient *client)
 {
   const std::string     *data;
 
-  data = &client->get_data();
+  data = &client->rcv();
   if (data->compare(0,9,"MAIL FROM") == 0)
     {
-      // client->set_state(SmtpParser::MAIL);
+      // client->setState(SmtpParser::MAIL);
       return true;
     }
   return false;
@@ -80,7 +80,7 @@ bool                    SmtpParser::ehlo(SmtpClient *client)
 {
   const std::string     *data;
 
-  data = &client->get_data();
+  data = &client->rcv();
   return (data->compare(0,4,"EHLO") == 0);
 }
 
@@ -88,7 +88,7 @@ bool                    SmtpParser::helo(SmtpClient *client)
 {
   const std::string     *data;
 
-  data = &client->get_data();
+  data = &client->rcv();
   return (data->compare(0,4,"HELO") == 0);
 }
 
@@ -97,8 +97,8 @@ SmtpParser::Action         SmtpParser::parse(SmtpClient *client)
   SmtpParser::State   last_state;
   const std::string     *cdata;
 
-  cdata = &client->get_data();
-  last_state = client->get_last_state();
+  cdata = &client->rcv();
+  last_state = client->getState();
   if (((last_state == SmtpParser::START) || (last_state == SmtpParser::RCPT)) &&
       (helo(client) || mail_from(client) || rcpt_to(client)))
     {

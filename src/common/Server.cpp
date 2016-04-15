@@ -8,19 +8,19 @@ Server::~Server()
 {
 }
 
-void            Server::process_events(Events *events)
+void            Server::processEvents(Events *events)
 {
   std::for_each(events->at(Epoll::READ_EVENTS).begin(),
                 events->at(Epoll::READ_EVENTS).end(),
-                std::bind1st(std::mem_fun(&Server::process_incomming), this));
+                std::bind1st(std::mem_fun(&Server::processIncomming), this));
 
   std::for_each(events->at(Epoll::NEW_CONN).begin(),
                 events->at(Epoll::NEW_CONN).end(),
-                std::bind1st(std::mem_fun(&Server::process_new), this));
+                std::bind1st(std::mem_fun(&Server::processNew), this));
 
   std::for_each(events->at(Epoll::ERROR_EVENTS).begin(),
                 events->at(Epoll::ERROR_EVENTS).end(),
-                std::bind1st(std::mem_fun(&Epoll::delete_client), &this->epoll));
+                std::bind1st(std::mem_fun(&Epoll::deleteClient), &this->epoll));
 }
 
 void            Server::run()

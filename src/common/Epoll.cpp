@@ -13,29 +13,29 @@ Epoll::~Epoll()
     free(this->events);
 }
 
-int                     Epoll::add_client(Client *client)
+int                     Epoll::addClient(Client *client)
 {
   int                   r;
 
-  r = epoll_ctl(this->epoll_fd, EPOLL_CTL_ADD, client->get_fd(), &this->event);
+  r = epoll_ctl(this->epoll_fd, EPOLL_CTL_ADD, client->getFd(), &this->event);
   if (r != 0)
     return (EXIT_FAILURE);
   return (EXIT_SUCCESS);
 }
 
-int                     Epoll::delete_client(Client *client)
+int                     Epoll::deleteClient(Client *client)
 {
   int                   r;
 
   std::cout << "Deleting client" << std::endl;
-  r = epoll_ctl(this->epoll_fd, EPOLL_CTL_DEL, client->get_fd(), &this->event);
+  r = epoll_ctl(this->epoll_fd, EPOLL_CTL_DEL, client->getFd(), &this->event);
   delete client;
   if (r != 0)
     return (EXIT_FAILURE);
   return (EXIT_SUCCESS);
 }
 
-void                    Epoll::init_event_struct(void *data, __uint32_t flags)
+void                    Epoll::initEventStruct(void *data, __uint32_t flags)
 {
   memset(&this->event,0,sizeof(struct epoll_event));
   this->event.data.ptr = data;
@@ -43,13 +43,13 @@ void                    Epoll::init_event_struct(void *data, __uint32_t flags)
   return;
 }
 
-int                     Epoll::listen_new_client(int fd, __uint32_t flags)
+int                     Epoll::listenNewClient(int fd, __uint32_t flags)
 {
   Client                *client;
 
   client = new Client();
-  init_event_struct((void*)client, flags);
-  client->set_socket(fd);
+  initEventStruct((void*)client, flags);
+  client->setSocket(fd);
   add_client(client);
   this->new_events[Epoll::NEW_CONN].push_back(client);
   return (0);
@@ -64,33 +64,33 @@ int			Epoll::init(ServerSocket& _socket)
   this->events = (epoll_event*)calloc(MAXEVENTS, sizeof(this->event));
   if (this->events == NULL)
     return(EXIT_FAILURE);
-  listen_new_client(this->server_socket->socket_fd, EPOLLIN);
+  listenNewClient(this->server_socket->socket_fd, EPOLLIN);
   return (EXIT_SUCCESS);
 }
 
-int                     Epoll::handle_read(Client *client)
+int                     Epoll::handleRead(Client *client)
 {
   int                   new_client_fd;
   int                   server_s;
   int                   incomming_s;
 
-  incomming_s = client->get_fd();
+  incomming_s = client->getFd();
   server_s = this->server_socket->socket_fd;
   if (server_s == incomming_s)
     {
       new_client_fd = this->server_socket->daccept();
-      this->listen_new_client(new_client_fd, EPOLLIN | EPOLLRDHUP);
+      this->listenNewClient(new_client_fd, EPOLLIN | EPOLLRDHUP);
     }
   else
     {
-      this->new_events[Epoll::READ_EVENTS].push_back(client);
+      this->newEvents[Epoll::READ_EVENTS].push_back(client);
     }
   return (EXIT_SUCCESS);
 }
 
-int                     Epoll::handle_error(Client *client)
+int                     Epoll::handleError(Client *client)
 {
-  this->delete_client(client);
+  this->deleteClient(client);
   return(-1);
 }
 

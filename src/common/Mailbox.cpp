@@ -20,6 +20,7 @@ Mailbox::Mailbox()
   this->mailboxes->insert(std::pair<std::string, std::list<std::string>* >(*user, (new std::list<std::string>())));
   this->mailboxes->insert(std::pair<std::string, std::list<std::string>* >(*user2, (new std::list<std::string>())));
   this->mailboxes->at(std::string("kool@kool.com"))->push_back("hello");
+  this->mailboxes->at(std::string("kool@kool.com"))->push_back("hello");
 }
 
 Mailbox::~Mailbox()
@@ -70,16 +71,16 @@ std::string&            Mailbox::get_mail(const std::string& user)
 
 std::list<std::string>&         Mailbox::number_new_mails(const std::string& user)
 {
-  std::list<std::string>*       res;
+  // std::list<std::string>*       res;
 
-  res = new std::list<std::string>();
+  auto res = new std::list<std::string>;
   auto t = this->mailboxes->find(user);
   if (t == this->mailboxes->end()) return *res;
   std::transform(this->mailboxes->at(user)->begin(),
                  this->mailboxes->at(user)->end(),
                  res->begin(),
                  [](const std::string& mail) {
-                   return mail.size();
+                   return std::to_string(mail.size());
                  });
   return *res;
 }
