@@ -5,30 +5,30 @@ SmtpParser::SmtpParser()
 {
 }
 
-bool                    SmtpParser::parse_mail(SmtpClient *client)
+bool                    SmtpParser::parseMail(Client *client)
 {
   const std::string     *data;
 
   data = &client->rcv();
-  client->getMail().set_body(*data);
-  client->setState(SmtpParser::MAIL_PARSED);
+  ((SmtpClient*)client->getInfo())->getMail().set_body(*data);
+  ((SmtpClient*)client->getInfo())->setState(SmtpParser::MAIL_PARSED);
   return true;
 }
 
-bool                    SmtpParser::data(SmtpClient *client)
+bool                    SmtpParser::data(Client *client)
 {
   const std::string     *data;
 
   data = &client->rcv();
   if (data->compare(0,4,"DATA") == 0)
     {
-      client->setState(SmtpParser::DATA);
+      ((SmtpClient*)client->getInfo())->setState(SmtpParser::DATA);
       return true;
     }
   return false;
 }
 
-std::vector<std::string>*        SmtpParser::get_adress(std::string s)
+std::vector<std::string>*        SmtpParser::getAdress(std::string s)
 {
   std::string   *str;
   std::vector<std::string> *r;
@@ -49,21 +49,21 @@ std::vector<std::string>*        SmtpParser::get_adress(std::string s)
   return r;
 }
 
-bool                    SmtpParser::rcpt_to(SmtpClient *client)
+bool                    SmtpParser::rcptTo(Client *client)
 {
   std::string     data;
 
   data = client->rcv();
   if (data.compare(0,7,"RCPT TO") == 0)
     {
-      client->getMail().set_dest(get_adress(data));
-      client->setState(SmtpParser::RCPT);
+      ((SmtpClient*)client->getInfo())->getMail().set_dest(getAdress(data));
+      ((SmtpClient*)client->getInfo())->setState(SmtpParser::RCPT);
       return true;
     }
   return false;
 }
 
-bool                    SmtpParser::mail_from(SmtpClient *client)
+bool                    SmtpParser::mailFrom(Client *client)
 {
   const std::string     *data;
 
@@ -76,7 +76,7 @@ bool                    SmtpParser::mail_from(SmtpClient *client)
   return false;
 }
 
-bool                    SmtpParser::ehlo(SmtpClient *client)
+bool                    SmtpParser::ehlo(Client *client)
 {
   const std::string     *data;
 
@@ -84,7 +84,7 @@ bool                    SmtpParser::ehlo(SmtpClient *client)
   return (data->compare(0,4,"EHLO") == 0);
 }
 
-bool                    SmtpParser::helo(SmtpClient *client)
+bool                    SmtpParser::helo(Client *client)
 {
   const std::string     *data;
 
@@ -92,15 +92,15 @@ bool                    SmtpParser::helo(SmtpClient *client)
   return (data->compare(0,4,"HELO") == 0);
 }
 
-SmtpParser::Action         SmtpParser::parse(SmtpClient *client)
+SmtpParser::Action         SmtpParser::parse(Client *client)
 {
   SmtpParser::State   last_state;
   const std::string     *cdata;
 
   cdata = &client->rcv();
-  last_state = client->getState();
+  last_state = ((SmtpClient*)client->getInfo())->getState();
   if (((last_state == SmtpParser::START) || (last_state == SmtpParser::RCPT)) &&
-      (helo(client) || mail_from(client) || rcpt_to(client)))
+      (helo(client) || mailFrom(client) || rcptTo(client)))
     {
       return SmtpParser::OK;
     }
@@ -110,7 +110,7 @@ SmtpParser::Action         SmtpParser::parse(SmtpClient *client)
     }
   else if (last_state == SmtpParser::DATA)
     {
-      parse_mail(client);
+      parseMail(client);
       return SmtpParser::OK;
     }
   else if (cdata->compare(0,4,"QUIT") == 0)

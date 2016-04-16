@@ -13,11 +13,11 @@ Epoll::~Epoll()
     free(this->events);
 }
 
-int                     Epoll::addClient(Client *client)
+int                     Epoll::addClient(int fd)
 {
   int                   r;
 
-  r = epoll_ctl(this->epoll_fd, EPOLL_CTL_ADD, client->getFd(), &this->event);
+  r = epoll_ctl(this->epoll_fd, EPOLL_CTL_ADD, fd, &this->event);
   if (r != 0)
     return (EXIT_FAILURE);
   return (EXIT_SUCCESS);
@@ -28,10 +28,11 @@ int                     Epoll::deleteClient(Client *client)
   int                   r;
 
   std::cout << "Deleting client" << std::endl;
-  r = epoll_ctl(this->epoll_fd, EPOLL_CTL_DEL, client->getFd(), &this->event);
-  delete client;
+  r = epoll_ctl(this->epoll_fd, EPOLL_CTL_DEL, client->getFd(), NULL);
+  if (client)
+   delete client;
   if (r != 0)
-    return (EXIT_FAILURE);
+    perror("Epoll Delete Client");
   return (EXIT_SUCCESS);
 }
 
@@ -47,10 +48,11 @@ int                     Epoll::listenNewClient(int fd, __uint32_t flags)
 {
   Client                *client;
 
+  std::cout << "New client" << fd << std::endl;
   client = new Client();
   initEventStruct((void*)client, flags);
   client->setSocket(fd);
-  add_client(client);
+  addClient(client->getFd());
   this->new_events[Epoll::NEW_CONN].push_back(client);
   return (0);
 }
@@ -64,26 +66,23 @@ int			Epoll::init(ServerSocket& _socket)
   this->events = (epoll_event*)calloc(MAXEVENTS, sizeof(this->event));
   if (this->events == NULL)
     return(EXIT_FAILURE);
-  listenNewClient(this->server_socket->socket_fd, EPOLLIN);
+  initEventStruct(NULL, EPOLLIN);
+  addClient(this->server_socket->socket_fd);
   return (EXIT_SUCCESS);
 }
 
 int                     Epoll::handleRead(Client *client)
 {
   int                   new_client_fd;
-  int                   server_s;
-  int                   incomming_s;
 
-  incomming_s = client->getFd();
-  server_s = this->server_socket->socket_fd;
-  if (server_s == incomming_s)
+  if (client == NULL)
     {
       new_client_fd = this->server_socket->daccept();
       this->listenNewClient(new_client_fd, EPOLLIN | EPOLLRDHUP);
     }
   else
     {
-      this->newEvents[Epoll::READ_EVENTS].push_back(client);
+      this->new_events[Epoll::READ_EVENTS].push_back(client);
     }
   return (EXIT_SUCCESS);
 }
@@ -110,7 +109,7 @@ void                    Epoll::wait()
       if (FD_HAS_ERROR_OR_DISCONNECT)
         this->new_events[Epoll::ERROR_EVENTS].push_back(client);
       else if (FD_IS_READY_FOR_READ)
-        handle_read(client);
+        handleRead(client);
       else if (FD_IS_READY_FOR_WRITE)
         this->new_events[Epoll::WRITE_EVENTS].push_back(client);
     }

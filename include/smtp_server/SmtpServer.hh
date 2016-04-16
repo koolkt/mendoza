@@ -10,8 +10,8 @@ class           SmtpServer: public Server
 {
   SmtpParser    parser;
   Mailbox       mbox;
-  virtual void  process_incomming(Client *);
-  virtual void  process_new(Client *);
+  virtual void  processIncomming(Client *);
+  virtual void  processNew(Client *);
   Responses     *responses;
 public:
   SmtpServer(const int port);

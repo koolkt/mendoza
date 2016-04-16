@@ -3,17 +3,19 @@
 #include        <regex>
 #include        <string>
 #include        <vector>
+#include        <Client.hh>
 
 class           SmtpClient;
+
 class           SmtpParser
 {
-  bool          data(SmtpClient *client);
-  bool          rcpt_to(SmtpClient *client);
-  bool          mail_from(SmtpClient *client);
-  bool          ehlo(SmtpClient *client);
-  bool          helo(SmtpClient *client);
-  bool          parse_mail(SmtpClient *client);
-  std::vector<std::string>*     get_adress(std::string s);
+  bool          data(Client *client);
+  bool          rcptTo(Client *client);
+  bool          mailFrom(Client *client);
+  bool          ehlo(Client *client);
+  bool          helo(Client *client);
+  bool          parseMail(Client *client);
+  std::vector<std::string>*     getAdress(std::string s);
 public:
   enum          State {START, HELO, MAIL,
                        RCPT, DATA, RSET,
@@ -22,6 +24,6 @@ public:
   enum          Action {OK, END_DATA, BYE, NOT_IMP, MAIL_NA};
 
   SmtpParser();
-  Action  parse(SmtpClient *);
+  Action  parse(Client *);
   ~SmtpParser();
 };

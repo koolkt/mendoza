@@ -35,7 +35,7 @@ class                   Epoll
   Epoll();
   Events                new_events;
   int                   deleteClient(Client*);
-  int                   addClient(Client*);
+  int                   addClient(int);
   int                   init(ServerSocket& socket);
   void                  wait();
   ~Epoll();

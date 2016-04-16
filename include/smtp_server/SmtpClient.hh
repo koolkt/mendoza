@@ -1,5 +1,4 @@
 #pragma once
-#include         <SmtpParser.hh>
 #include         <MailClient.hh>
 
 class           SmtpClient : public MailClient

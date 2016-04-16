@@ -9,9 +9,9 @@ void             read_incomming(Client *client)
   char          buff[4096];
 
   br = 1;
-  br = read(client->get_fd(), buff, 4095);
+  br = read(client->getFd(), buff, 4095);
   buff[br] = '\0';
-  write(client->get_fd(), buff, br);
+  write(client->getFd(), buff, br);
   std::cout << buff << std::endl;
 }
 
@@ -39,7 +39,7 @@ int             main(int argc, char **argv)
 
       std::for_each(events->at(Epoll::ERROR_EVENTS).begin(),
                     events->at(Epoll::ERROR_EVENTS).end(),
-                    std::bind1st(std::mem_fun(&Epoll::delete_client), &loop));
+                    std::bind1st(std::mem_fun(&Epoll::deleteClient), loop));
     }
   return (0);
 }

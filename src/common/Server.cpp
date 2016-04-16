@@ -29,6 +29,6 @@ void            Server::run()
   while (42)
     {
       this->epoll.wait();
-      process_events(&this->epoll.new_events);
+      processEvents(&this->epoll.new_events);
     }
 }
