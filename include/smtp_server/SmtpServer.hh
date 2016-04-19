@@ -1,8 +1,9 @@
-#pragma once
-#include        <SmtpParser.hh>
+#pragma         once
+
 #include        <Mailbox.hh>
 #include        <Server.hh>
 #include        <SmtpClient.hh>
+#include        <SmtpParser.hh>
 
 typedef std::vector<std::string*> Responses;
 

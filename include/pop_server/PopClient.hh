@@ -1,10 +1,12 @@
-#include        <Client.hh>
+#pragma once
+#include         <MailClient.hh>
 
-class           PopClient : public Client
+class           PopClient : public MailClient
 {
+  PopParser::State             last_state;
   public:
   PopClient();
-  void          set_state(PopParser::State);
-  PopParser::State const & get_last_state() const;
+  void                          setState(PopParser::State);
+  PopParser::State const&       getState() const;
   ~PopClient();
 };

@@ -19,8 +19,8 @@ Mailbox::Mailbox()
   this->users.insert(std::pair<std::string, std::string >(*user2,*pass2));
   this->mailboxes->insert(std::pair<std::string, std::list<std::string>* >(*user, (new std::list<std::string>())));
   this->mailboxes->insert(std::pair<std::string, std::list<std::string>* >(*user2, (new std::list<std::string>())));
-  this->mailboxes->at(std::string("kool@kool.com"))->push_back("hello");
-  this->mailboxes->at(std::string("kool@kool.com"))->push_back("hello");
+  this->mailboxes->at(std::string("kool@kool.com"))->push_back("hello world");
+  this->mailboxes->at(std::string("kool@kool.com"))->push_back("hello world");
 }
 
 Mailbox::~Mailbox()
@@ -73,14 +73,17 @@ std::list<std::string>&         Mailbox::number_new_mails(const std::string& use
 {
   // std::list<std::string>*       res;
 
-  auto res = new std::list<std::string>;
+  auto res = new std::list<std::string>(2);
   auto t = this->mailboxes->find(user);
   if (t == this->mailboxes->end()) return *res;
+  std::cout << "User Found: " << this->mailboxes->at(user)->size() << " new mails"<<std::endl;
   std::transform(this->mailboxes->at(user)->begin(),
                  this->mailboxes->at(user)->end(),
                  res->begin(),
                  [](const std::string& mail) {
+                   std::cout << "size: " << mail.size()<< std::endl;
                    return std::to_string(mail.size());
                  });
+  std::cout << "final list size: " << res->size() << std::endl;
   return *res;
 }

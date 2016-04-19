@@ -2,6 +2,7 @@
 #include        <Mail.hh>
 #include        <string>
 #include        <SmtpParser.hh>
+#include        <PopParser.hh>
 
 class           MailClient
 {

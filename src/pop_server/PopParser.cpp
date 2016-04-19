@@ -31,12 +31,12 @@ bool                    PopParser::quit(const std::string *data)
   return (data->compare(0,4,"QUIT") == 0);
 }
 
-PopParser::Action  PopParser::parse(PopClient *client)
+PopParser::Action  PopParser::parse(Client *client)
 {
   // PopParser::State   last_state;
   const std::string     *data;
 
-  data = &client->get_data();
+  data = &client->rcv();
   std::cout << "Client says: "<< *data << std::endl;
   // last_state = client->get_last_state();
   if (capa(data))

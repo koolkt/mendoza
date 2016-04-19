@@ -3,6 +3,7 @@
 #include        <regex>
 #include        <string>
 #include        <vector>
+#include        <Client.hh>
 
 class           PopClient;
 class           PopParser
@@ -17,6 +18,6 @@ public:
 
   enum          Action {OK, CAPA, AUTH, USER, PASS, STAT, LIST, RETR, DELE,  QUIT, NOT_IMP};
   PopParser();
-  Action  parse(PopClient *);
+  Action  parse(Client *);
   ~PopParser();
 };
