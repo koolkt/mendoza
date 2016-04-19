@@ -43,15 +43,26 @@ void  PopServer::processIncomming(Client *vclient)
       else
         vclient->send("-ERR\r\n");
     }
-  else if ((r == PopParser::STAT))
+  else if((r == PopParser::STAT))
     {
+      vclient->send("+OK\r\n");
+    }
+  else if((r == PopParser::LIST))
+    {
+      vclient->send("+OK\r\n");
+      int nm =1;
       for(auto i: this->mbox.number_new_mails(client->getUsername()))
         {
-          // vclient->send(i);
-          std::cout << "Server says: "<< i << std::endl;
+          res += std::to_string(nm);
+          res += " ";
+          res += i;
+          res += "\r\n";
+          vclient->send(res);
+          nm++;
+          std::cout << "Server says: "<< res << std::endl;
+          res = "";
         }
-      res += "+OK""\r\n";
-      vclient->send(res);
+      vclient->send(".\r\n");
     }
   else
     {

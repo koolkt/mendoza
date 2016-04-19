@@ -26,6 +26,11 @@ bool                    PopParser::stat(const std::string *data)
   return (data->compare(0,4,"STAT") == 0);
 }
 
+bool                    PopParser::lst(const std::string *data)
+{
+  return (data->compare(0,4,"LIST") == 0);
+}
+
 bool                    PopParser::quit(const std::string *data)
 {
   return (data->compare(0,4,"QUIT") == 0);
@@ -58,6 +63,10 @@ PopParser::Action  PopParser::parse(Client *client)
   if (quit(data))
     {
       return PopParser::QUIT;
+    }
+  if (lst(data))
+    {
+      return PopParser::LIST;
     }
   return PopParser::NOT_IMP;
 }

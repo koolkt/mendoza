@@ -95,6 +95,10 @@ class TestBasicSmtp(unittest.TestCase):
         self.assertOkRes()
         self.s.mysend('STAT\r\n')
         self.assertOkRes()
+        self.s.mysend('LIST\r\n')
+        self.assertOkRes()
+        sleep(.01)
+        self.assertEqualRcv('1 11\r\n2 11\r\n.\r\n')
         self.s.mysend('QUIT\r\n')
         self.assertOkRes()
 

@@ -12,6 +12,7 @@ class           PopParser
   bool                    user(const std::string *data);
   bool                    pass(const std::string *data);
   bool                    stat(const std::string *data);
+  bool                    lst(const std::string *data);
   bool                    quit(const std::string *data);
 public:
   enum          State {START, V_USER, V_PASS, SEND_MAIL};
